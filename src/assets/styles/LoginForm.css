@@ -1,0 +1,29 @@
+/* LoginForm.css */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+}
+
+.login-box {
+    width: 100%;
+    max-width: 400px; /* Adjust width as necessary */
+    padding: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+.flex-container {
+    display: flex;
+    align-items: center; /* Aligns items vertically in the center */
+}
+
+.flex-item-right {
+    margin-left: auto; /* Pushes the element to the right */
+}
+
+.no-margin {
+    margin: 0; /* Removes margin */
+}
