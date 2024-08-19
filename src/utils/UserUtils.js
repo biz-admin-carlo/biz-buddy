@@ -25,3 +25,47 @@ export async function userLogin(email, password) {
         return false;
     }
 }
+
+export async function userDetails(token) {
+    try {
+        const url = `${apiUrl}/api/v1/biz-buddy/users/details`;
+
+        const response = await axios.get(url, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` 
+            }
+        });
+
+        console.log(response.data);
+        if (response.status === 200) {
+            console.log('User Details:', response.data);
+            return response.data; 
+        } else {
+            return false;
+        }
+    } catch (error) {
+        return false; 
+    }
+}
+
+export async function userTransactions(token) {
+    try {
+        const url = `${apiUrl}/api/v1/biz-buddy/users/transactions`;
+
+        const response = await axios.get(url, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        console.log(response.data);
+        if (response.status === 200) {
+            return response.data; 
+        } else {
+            return false;  
+        }
+    } catch (error) {
+        return false; 
+    }
+}

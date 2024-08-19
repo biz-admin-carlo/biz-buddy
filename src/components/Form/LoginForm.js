@@ -4,7 +4,9 @@ import InputField from '../../components/Base/InputField';
 import CustomButton from '../../components/Base/Button';
 import { Typography, Link } from '@mui/material';
 import { userLogin } from '../../utils/UserUtils';
+import Avatar from '@mui/material/Avatar';
 
+import icon from '../../assets/icons/icon-biz-buddy.ico';
 import '../../assets/fonts/roboto.css';
 import '../../assets/fonts/color.css';
 import '../../assets/styles/LoginForm.css';
@@ -35,11 +37,22 @@ function LoginForm() {
   return (
     <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '10vh' }}>
       <div style={{
-        width: '100%',
-        maxWidth: '400px',
-        padding: '20px'
-        }}>
-        <h1 className='roboto-medium'>BizBuddy</h1>
+              width: '80%',
+              maxWidth: '400px',
+              border: '1px solid #000', 
+              borderRadius: '10px',
+              padding: '5vh'
+            }}>
+
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '80%', maxWidth: '400px' }}>
+          <Avatar
+            src={icon}
+            className="profile-header-avatar"
+            style={{ marginRight: '0px' }}
+          />
+          <h1 className="roboto-medium">BizBuddy</h1>
+        </div>
+        
         <h2 className='roboto-regular'>Login</h2>
         <InputField
           id="username"

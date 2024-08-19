@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import CustomButton from '../../components/Base/Button';
+import CustomButton from '../Base/Button';
+import Avatar from '@mui/material/Avatar';
 import { clockInClockOut } from '../../utils/TimeUtils';
+import { clockInQuotes, clockOutQuotes, getRandomQuote } from '../../utils/quotesUtils';
+import ClipLoader from "react-spinners/ClipLoader";
+
+import icon from '../../assets/icons/icon-biz-buddy.ico';
 
 import '../../assets/fonts/roboto.css';
 import '../../assets/fonts/color.css';
 import '../../assets/styles/LoginForm.css';
-
-import { css } from "@emotion/react";
-import ClipLoader from "react-spinners/ClipLoader";
-
+import '../../assets/styles/HomeForm.css';
 
 function HomeForm() {
 
@@ -21,13 +23,15 @@ function HomeForm() {
   const [ loading, setLoading ] = useState(false);
   const [ recordedTimeIn, setRecordedTimeIn ] = useState(''); 
   const [ recordedTimeOut, setRecordedTimeOut ] = useState('');
-  const [showTimeClocks, setShowTimeClocks] = useState(true);
+  const [ showTimeClocks, setShowTimeClocks ] = useState(true);
+  const [ quote, setQuote ] = useState(getRandomQuote(clockOutQuotes));
+  const [ showQuote, setShowQuote ] = useState(true); 
 
 
-const formatDateAndTime = (isoString) => {
+  const formatDateAndTime = (isoString) => {
     if (!isoString) return null;
     const date = new Date(isoString);
-    if (isNaN(date.getTime())) return null;  // Check if the date is valid
+    if (isNaN(date.getTime())) return null; 
     return date.toLocaleString('en-US', {
         weekday: 'long',
         year: 'numeric',
@@ -38,31 +42,43 @@ const formatDateAndTime = (isoString) => {
         second: '2-digit', 
         timeZoneName: 'short'
     });
-};
+  };
 
   const toggleClock = async () => {
+    if (!isClockedIn) {
+      setQuote(getRandomQuote(clockInQuotes)); 
+    } else {
+      setQuote(getRandomQuote(clockOutQuotes)); 
+    }
+    setShowQuote(true);
+  
     setLoading(true);
     const result = await clockInClockOut();
+    
     setRecordedTimeIn(formatDateAndTime(result.data.timeIn));
     setRecordedTimeOut(formatDateAndTime(result.data.timeOut));
     setLoading(false);
     setIsClockedIn(!isClockedIn);
-};
+  
+    setTimeout(() => {
+      setShowQuote(false);
+    }, 15000);
+  };
 
-const toggleBreak = () => {
+  const toggleBreak = () => {
     setIsBreakIn(!isBreakIn); 
-};
+  };
 
-useEffect(() => {
+  useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date().toLocaleTimeString());
       setTimeZone(Intl.DateTimeFormat().resolvedOptions().timeZone);
     }, 1000);
 
     return () => clearInterval(timer);
-}, []);
+  }, []);
 
-useEffect(() => {
+  useEffect(() => {
     let timer = null;
     if (isClockedIn) {
       timer = setInterval(() => {
@@ -79,52 +95,66 @@ useEffect(() => {
     return () => clearInterval(timer);
   }, [isClockedIn, startTime]);
 
-useEffect(() => {
+  useEffect(() => {
     if (recordedTimeIn && recordedTimeOut) {
         const timer = setTimeout(() => {
             setShowTimeClocks(false); 
-        }, 300000);
+        }, 120000);
 
         return () => clearTimeout(timer); 
     }
-}, [recordedTimeIn, recordedTimeOut]);
+  }, [recordedTimeIn, recordedTimeOut]);
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '10vh' }}>
-      <div style={{
-        width: '100%',
-        maxWidth: '400px',
-      }}>
-        <h1 className='roboto-medium'>Biz Buddy</h1>
-        <h3 className='roboto-home-timezone'>{timeZone}</h3>
-        <h2 className='roboto-home'>{currentTime}</h2>
+    <div className="homeform-container">
+      <div className="homeform-wrapper">
+
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Avatar
+            src={icon}
+            className="profile-header-avatar"
+          />
+          <h1 className="roboto-medium">BizBuddy</h1>
+        </div>
+
+        <h3 className="homeform-subtitle">Asia/Manila</h3>
+        <h2 className="homeform-time">{currentTime}</h2>
         {loading ? (
-        <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-        }}>
+        <div className="homeform-loader-container">
             <ClipLoader color="#36D7B7" size={50} />
         </div>
         ) : (
           <div>
-            <h3 className='roboto-home-question'>
+            <h3 className="homeform-question">
               {isClockedIn ? 'You wish to clock out already?' : 'You wish to clock in already?'}
             </h3>
-            <div style={{ textAlign: 'right' }}>
+            <div className="homeform-button-container">
               <CustomButton onClick={toggleClock}>
                 {isClockedIn ? 'Clock-Out' : 'Clock-In'}
               </CustomButton>
             </div>
+            {showQuote && (
+              <h4 className="homeform-question-quotes gray-text">
+                {quote}
+              </h4>
+            )}
             {recordedTimeIn && showTimeClocks && (
                 <>
-                    <p className='roboto-thin-italic biz-text'>This is the logged-in time clock: {recordedTimeIn}</p>
-                    {recordedTimeOut && <p className='roboto-thin-italic biz-text'>This is the logged-out time clock: {recordedTimeOut}</p>}
+                  <hr className="homeform-hr-large"/>
+                    <p className="homeform-logged-time biz-text">This is the logged-in time clock: {recordedTimeIn}</p>
+                    {recordedTimeOut && 
+                    <>
+                      <hr className="homeform-hr"/>
+                    <p className="homeform-logged-time biz-text">This is the logged-out time clock: {recordedTimeOut}</p> </>}
+                    <hr className="homeform-hr"/>
+                    <p className="homeform-documentation-note">
+                      For documentation purposes, we recommend taking a screenshot of this screen.
+                    </p>
                 </>
             )}
           </div>
-        )}
-      </div>
+        )}    
+        </div>
     </div>
   );
 }

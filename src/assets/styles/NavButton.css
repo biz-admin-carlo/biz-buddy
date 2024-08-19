@@ -1,0 +1,30 @@
+/* NavButton.css */
+.nav-container-bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f8f8f8;
+    padding: 10px 0;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    margin-top: 50px;
+  }
+  
+  .nav-item {
+    margin: 0 10px;
+  }
+  
+  .nav-link {
+    text-decoration: none;  /* Remove underline */
+    color: black;           /* Set font color to black */
+    transition: color 0.3s ease, font-size 0.3s ease;
+  }
+  
+  .nav-link:hover {
+    color: #aaa;  /* Lighter text color on hover */
+    font-size: 1.5em;  /* Increase font size on hover */
+  }
+  

@@ -1,0 +1,89 @@
+/* HomeForm.css */
+
+/* Container styles */
+.homeform-container {
+    display: flex;
+    justify-content: center;
+    padding-top: 10vh;
+  }
+  
+  /* Inner wrapper for the form */
+  .homeform-wrapper {
+    width: 80%;
+    max-width: 400px;
+  }
+  
+  /* Loader container */
+  .homeform-loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Section to align the button to the right */
+  .homeform-button-container {
+    text-align: right;
+  }
+  
+  /* Text styles */
+  .homeform-title {
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+  }
+  
+  .homeform-subtitle {
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+  
+  .homeform-time {
+    font-family: "Roboto", sans-serif;
+    font-style: normal;
+    font-size: 65px;
+    text-align: center !important
+  }
+  
+  .homeform-question {
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    text-align: right;
+    align-items: end;
+  }
+
+  .homeform-question-quotes {
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: italic;
+    text-align: center;
+    align-items: end;
+  }
+  
+  .homeform-logged-time {
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: italic;
+    text-align: center;
+  }
+  
+  .homeform-documentation-note {
+    font-family: 'Roboto Regular', sans-serif;
+    color: gray;
+    text-align: center;
+    font-weight: bold;
+    margin-top: 50px;
+    margin-bottom: 100px;
+
+  }
+  
+  /* Horizontal rule */
+  .homeform-hr {
+    margin-top: 20px;
+  }
+  
+  .homeform-hr-large {
+    margin-top: 50px;
+  }
+  

@@ -13,25 +13,29 @@ function LoginForm() {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '10vh' }}>
-        <div style={{
-        width: '100%',
-        maxWidth: '400px',
-        padding: '20px'
+      <div style={{
+          width: '80%',
+          maxWidth: '400px',
+          border: '1px solid #000', 
+          borderRadius: '10px',
+          padding: '5vh'
         }}>
-        <h1 className='roboto-medium'>What's your password?</h1>
-        <h2 className='roboto-regular' sx={{ margin: 0 }}>email.address</h2>
+        <h1 className='roboto-medium'>Reset your password</h1>
+        <h2 className='roboto-regular' style={{ margin: 0 }}>Enter your email address</h2>
         <InputField
-            id="password"
-            label="Password"
-            type="password"
+            id="email"
+            label="Email Address"
+            type="email"
             onChange={handleInputChange}
             required={true} 
             sx={{ pb: 2 }}
+            style={{ marginTop: '16px' }}
+
         />
-        <h4 className='roboto-light gray-text'>Forgotten your password?</h4>
+        <h4 className='roboto-light gray-text'>Already Remembered?</h4>
         <div style={{ textAlign: 'right' }}>
             <CustomButton>
-            Sign In
+            Reset Password
             </CustomButton>
         </div>
         </div>
