@@ -16,7 +16,7 @@ export async function clockInClockOut() {
                 'TimeZone': timeZone
             }
         });
-\        if (response.data) { 
+        if (response.data) { 
             return response.data;
         } else {
             return false;
