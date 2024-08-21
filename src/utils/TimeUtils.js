@@ -4,6 +4,7 @@ const apiUrl = process.env.REACT_APP_API_URL;
 
 export async function clockInClockOut() {
     const token = localStorage.getItem('bb_session_token');  
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     try {
         const url = `${apiUrl}/api/v1/biz-buddy/time-logs/clock-in/clock-out`;
@@ -11,10 +12,11 @@ export async function clockInClockOut() {
         const response = await axios.post(url, {}, { 
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                'TimeZone': timeZone
             }
         });
-        if (response.data) { 
+\        if (response.data) { 
             return response.data;
         } else {
             return false;

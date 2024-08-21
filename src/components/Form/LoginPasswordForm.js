@@ -8,7 +8,7 @@ import '../../assets/styles/LoginForm.css';
 
 function LoginForm() {
   const handleInputChange = (event) => {
-    console.log(event.target.value);
+    // console.log(event.target.value);
   };
 
   return (

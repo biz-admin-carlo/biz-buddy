@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -12,65 +12,48 @@ import '../../assets/fonts/roboto.css';
 import '../../assets/fonts/color.css';
 import '../../assets/styles/LoginForm.css';
 
-function createData(name, timeIn, timeOut, totalTime, breakHours) {
-    return { name, timeIn, timeOut, totalTime, breakHours };
-}
-
-const rows = [
-    createData('Saturday, August 17, 2024', '09:53:16', '17:30:16', '8.5', '1.0'),
-    createData('Friday, August 16, 2024', '10:00:00', '19:00:00', '9.0', '1.5'),
-    createData('Thursday, August 15, 2024', '08:30:00', '17:30:00', '8.0', '1.0'),
-    createData('Wednesday, August 14, 2024', '-', '-', '-', '-'),
-    createData('Tuesday, August 13, 2024', '08:45:00', '17:15:00', '8.0', '1.0'),
-    createData('Monday, August 12, 2024', '08:30:00', '17:30:00', '8.5', '1.0'),
-    createData('Sunday, August 11, 2024', '09:00:00', '18:00:00', '8.0', '1.0'),
-    createData('Saturday, August 10, 2024', '09:30:00', '17:00:00', '7.5', '0.5'),
-    createData('Saturday, August 17, 2024', '09:53:16', '17:30:16', '8.5', '1.0'),
-    createData('Friday, August 16, 2024', '10:00:00', '19:00:00', '9.0', '1.5'),
-    createData('Thursday, August 15, 2024', '08:30:00', '17:30:00', '8.0', '1.0'),
-    createData('Wednesday, August 14, 2024', '-', '-', '-', '-'),
-    createData('Tuesday, August 13, 2024', '08:45:00', '17:15:00', '8.0', '1.0'),
-    createData('Monday, August 12, 2024', '08:30:00', '17:30:00', '8.5', '1.0'),
-    createData('Sunday, August 11, 2024', '09:00:00', '18:00:00', '8.0', '1.0'),
-    createData('Saturday, August 10, 2024', '09:30:00', '17:00:00', '7.5', '0.5'),
-    createData('Saturday, August 17, 2024', '09:53:16', '17:30:16', '8.5', '1.0'),
-    createData('Friday, August 16, 2024', '10:00:00', '19:00:00', '9.0', '1.5'),
-    createData('Thursday, August 15, 2024', '08:30:00', '17:30:00', '8.0', '1.0'),
-    createData('Wednesday, August 14, 2024', '-', '-', '-', '-'),
-    createData('Tuesday, August 13, 2024', '08:45:00', '17:15:00', '8.0', '1.0'),
-    createData('Monday, August 12, 2024', '08:30:00', '17:30:00', '8.5', '1.0'),
-    createData('Sunday, August 11, 2024', '09:00:00', '18:00:00', '8.0', '1.0'),
-    createData('Saturday, August 10, 2024', '09:30:00', '17:00:00', '7.5', '0.5'),
-    createData('Saturday, August 17, 2024', '09:53:16', '17:30:16', '8.5', '1.0'),
-    createData('Friday, August 16, 2024', '10:00:00', '19:00:00', '9.0', '1.5'),
-    createData('Thursday, August 15, 2024', '08:30:00', '17:30:00', '8.0', '1.0'),
-    createData('Wednesday, August 14, 2024', '-', '-', '-', '-'),
-    createData('Tuesday, August 13, 2024', '08:45:00', '17:15:00', '8.0', '1.0'),
-    createData('Monday, August 12, 2024', '08:30:00', '17:30:00', '8.5', '1.0'),
-    createData('Sunday, August 11, 2024', '09:00:00', '18:00:00', '8.0', '1.0'),
-    createData('Saturday, August 10, 2024', '09:30:00', '17:00:00', '7.5', '0.5'),
-    
-];
+import { userTransactions, userDetails } from '../../utils/UserUtils';
 
 function Shift() {
-    const [page, setPage] = useState(1);
+    const [ page, setPage ] = useState(1);
+    const [ userInfo, setUserInfo ] = useState('');
+    const [ transactions, setTransactions ] = useState([]);
     const rowsPerPage = 7;
+
+    useEffect(() => {
+        async function fetchTransactions() {
+            const result = await userTransactions();
+            if (result) {
+                setTransactions(result); 
+            }
+        }
+
+        async function fetchUserDetails() {
+            const result = await userDetails();
+            if(result) {
+                setUserInfo(result);
+            }
+        }
+
+        fetchTransactions();
+        fetchUserDetails();
+    }, []);
+
+    const paginatedRows = transactions.slice(
+        (page - 1) * rowsPerPage,
+        page * rowsPerPage
+    );
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
-
-    const paginatedRows = rows.slice(
-        (page - 1) * rowsPerPage,
-        page * rowsPerPage
-    );
 
     return (
         <>
             <div style={{ padding: '10vh' }}>
                 <h1 className="roboto-medium">Biz Buddy | Shifts</h1>
                 <h3 className="roboto-light">
-                    Welcome token.userData.firstName! These are your logged transactions:
+                    Welcome {userInfo.firstName}! These are your logged transactions:
                 </h3>
 
                 <div>
@@ -87,16 +70,21 @@ function Shift() {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {paginatedRows.map((row) => (
-                                    <TableRow key={row.name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                {paginatedRows.map((row, index) => (
+                                    <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                         <TableCell component="th" scope="row">
-                                            {row.name}
+                                            {new Date(row.date).toLocaleDateString('en-US', {
+                                                weekday: 'long',
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric'
+                                            })}
                                         </TableCell>
-                                        <TableCell align="right">{row.timeIn}</TableCell>
-                                        <TableCell align="right">{row.timeOut}</TableCell>
-                                        <TableCell align="right">{row.breakHours}</TableCell>
-                                        <TableCell align="right">{row.breakHours}</TableCell>
-                                        <TableCell align="right">{row.totalTime}</TableCell>
+                                        <TableCell align="right">{row.timeIn ? new Date(row.timeIn).toLocaleTimeString() : '-'}</TableCell>
+                                        <TableCell align="right">{row.timeOut ? new Date(row.timeOut).toLocaleTimeString() : '-'}</TableCell>
+                                        <TableCell align="right">{row.lunchHours || '-'}</TableCell>
+                                        <TableCell align="right">{row.breakHours || '-'}</TableCell>
+                                        <TableCell align="right">{row.totalHours}</TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
@@ -105,7 +93,7 @@ function Shift() {
                 </div>
                 <div style={{ marginTop: '5vh', display: 'flex', justifyContent: 'center' }}>
                     <Pagination
-                        count={Math.ceil(rows.length / rowsPerPage)}
+                        count={Math.ceil(transactions.length / rowsPerPage)}
                         page={page}
                         onChange={handleChangePage}
                         shape="rounded"

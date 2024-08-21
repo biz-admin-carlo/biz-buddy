@@ -23,11 +23,11 @@ function NavBottom() {
       <p className="nav-item roboto-light">
         <Link to="/" className="nav-link">Home</Link>
       </p>
-      {/* <span> | </span>
+      <span> | </span>
       <p className="nav-item roboto-light">
         <Link to="/shifts" className="nav-link">Shifts</Link>
       </p>
-      <span> | </span>
+      {/* <span> | </span>
       <p className="nav-item roboto-light">
         <Link to="/profile" className="nav-link">Profile</Link>
       </p>

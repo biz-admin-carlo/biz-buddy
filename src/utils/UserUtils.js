@@ -26,9 +26,10 @@ export async function userLogin(email, password) {
     }
 }
 
-export async function userDetails(token) {
+export async function userDetails() {
     try {
         const url = `${apiUrl}/api/v1/biz-buddy/users/details`;
+        const token = localStorage.getItem('bb_session_token');  
 
         const response = await axios.get(url, {
             headers: {
@@ -37,9 +38,7 @@ export async function userDetails(token) {
             }
         });
 
-        console.log(response.data);
         if (response.status === 200) {
-            console.log('User Details:', response.data);
             return response.data; 
         } else {
             return false;
@@ -49,17 +48,16 @@ export async function userDetails(token) {
     }
 }
 
-export async function userTransactions(token) {
+export async function userTransactions() {
     try {
+        const token = localStorage.getItem('bb_session_token');  
         const url = `${apiUrl}/api/v1/biz-buddy/users/transactions`;
-
         const response = await axios.get(url, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             }
         });
-        console.log(response.data);
         if (response.status === 200) {
             return response.data; 
         } else {
@@ -67,5 +65,28 @@ export async function userTransactions(token) {
         }
     } catch (error) {
         return false; 
+    }
+}
+
+export async function checkExistingTransactions() {
+    const token = localStorage.getItem('bb_session_token');  
+
+    try {
+        const url = `${apiUrl}/api/v1/biz-buddy/users/check-transactions`;
+
+        const response = await axios.get(url, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        if (response.data) { 
+            return response.data;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        // console.error('Error during clock-in/clock-out:', error); 
+        return false;
     }
 }

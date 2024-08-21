@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import CustomButton from '../Base/Button';
 import Avatar from '@mui/material/Avatar';
 import { clockInClockOut } from '../../utils/TimeUtils';
+import { checkExistingTransactions } from '../../utils/UserUtils';
 import { clockInQuotes, clockOutQuotes, getRandomQuote } from '../../utils/quotesUtils';
 import ClipLoader from "react-spinners/ClipLoader";
 
@@ -26,7 +27,7 @@ function HomeForm() {
   const [ showTimeClocks, setShowTimeClocks ] = useState(true);
   const [ quote, setQuote ] = useState(getRandomQuote(clockOutQuotes));
   const [ showQuote, setShowQuote ] = useState(true); 
-
+  const [ exists, setExists ] = useState(null);
 
   const formatDateAndTime = (isoString) => {
     if (!isoString) return null;
@@ -74,6 +75,16 @@ function HomeForm() {
       setCurrentTime(new Date().toLocaleTimeString());
       setTimeZone(Intl.DateTimeFormat().resolvedOptions().timeZone);
     }, 1000);
+
+    async function fetchTransactions() {
+      const result = await checkExistingTransactions();
+      setExists(result);
+      if (result && typeof result === 'object') {
+        setIsClockedIn(true);
+      }
+    }
+
+    fetchTransactions();
 
     return () => clearInterval(timer);
   }, []);
