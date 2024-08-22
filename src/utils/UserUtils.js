@@ -37,7 +37,6 @@ export async function userDetails() {
                 'Authorization': `Bearer ${token}` 
             }
         });
-
         if (response.status === 200) {
             return response.data; 
         } else {

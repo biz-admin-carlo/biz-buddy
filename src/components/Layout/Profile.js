@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
-import '../../assets/styles/ProfileDetails.css'
+import '../../assets/styles/ProfileDetails.css';
+
+import { userDetails } from '../../utils/UserUtils';
 
 import icon1 from '../../assets/icons/icon-avatar-001.png';
 import icon2 from '../../assets/icons/icon-avatar-002.png';
@@ -46,25 +48,54 @@ function ProfileInfo({ label, value }) {
 
 function ProfileDetails() {
   const [ icon, setIcon ] = useState(icon1); 
+  const [ userInfo, setUserInfo ] = useState('');
 
   useEffect(() => {
     setIcon(getRandomIcon());
+
+    async function fetchUserDetails() {
+      const result = await userDetails();
+      if(result) {
+          setUserInfo(result);
+      }
+  }
+    fetchUserDetails();
+
   }, []);
+
+  const fullName = `${userInfo.firstName} ${userInfo.lastName}`;
+  const teamPostion = userInfo.teamPosition ? userInfo.teamPosition : "-";
+  const fetchedBirthDate = userInfo.birthday; 
+  const birthDate = fetchedBirthDate 
+  ? new Date(fetchedBirthDate).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+  : "-";
+  const dateString = userInfo.dateJoined;
+  const formattedDate = dateString 
+  ? new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+  : "-";
 
   return (
     <>
       <div className="profile-details-container">
         <div style={{ width: '80%', maxWidth: '400px' }}>
-          <ProfileHeader icon={icon} name="carloicorcuera" email="carloicorcuera@test.com" position="Team Manager" />
+          <ProfileHeader icon={icon} name={fullName} email={userInfo.email} position={teamPostion} />
         </div>
       </div>
       <div className="profile-info-container">
-        <div style={{ width: '40%', maxWidth: '200px' }}>
-          <ProfileInfo label="Name" value="Carlo Corcuera" />
-          <ProfileInfo label="Email" value="carloicorcuera@test.com" />
-          <ProfileInfo label="Birthday" value="August 20, 2024" />
-          <ProfileInfo label="Team Manager" value="Sir John Doe" />
-          <ProfileInfo label="Joined On" value="August 10, 2024" />
+        <div style={{ width: '30%', maxWidth: '200px' }}>
+          <ProfileInfo label="Name" value={fullName} />
+          <ProfileInfo label="Email" value={userInfo.email} />
+          <ProfileInfo label="Birthday" value={birthDate} />
+          <ProfileInfo label="Team Manager" value={teamPostion} />
+          <ProfileInfo label="Joined On" value={formattedDate} />
         </div>
       </div>
     </>
