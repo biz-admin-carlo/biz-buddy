@@ -31,10 +31,14 @@ function NavBottom() {
       <p className="nav-item roboto-light">
         <Link to="/profile" className="nav-link">Profile</Link>
       </p>
-      {/* <span> | </span>
+      <span> | </span>
       <p className="nav-item roboto-light">
-        <Link to="/register" className="nav-link">Register</Link>
-      </p> */}
+        <Link to="/team" className="nav-link">Team</Link>
+      </p>
+      <span> | </span>
+      <p className="nav-item roboto-light">
+        <Link to="/leave" className="nav-link">Leaves</Link>
+      </p>
       <span> | </span>
       <p className="nav-item roboto-light">
         <Link to="/" className="nav-link" onClick={handleLogout}>Logout</Link>

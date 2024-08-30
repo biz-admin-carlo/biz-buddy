@@ -1,25 +1,24 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import RegisterUser from '../../components/Layout/RegisterUser';
-import RegisterTeam from '../../components/Layout/RegisterTeam';
+import Leave from '../../components/Layout/Leave'
 import useAuthRedirect from '../../hooks/useAuthRedirect';
 
-function RegisterPage() {
+function ProfilePage() {
     useAuthRedirect();
   
     return (
       <div>
         <Helmet>
-          <title>BizBuddy | Register Account</title>
+          <title>BizBuddy | My Leaves</title>
         </Helmet>
         
         <main>
-          <RegisterTeam />
+          <Leave />
         </main>
       </div>
     );
   }
   
-  export default RegisterPage;
+  export default ProfilePage;
 
 

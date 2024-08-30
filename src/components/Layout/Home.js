@@ -4,7 +4,12 @@ import Avatar from '@mui/material/Avatar';
 import { clockInClockOut } from '../../utils/TimeUtils';
 import { checkExistingTransactions } from '../../utils/UserUtils';
 import { clockInQuotes, clockOutQuotes, getRandomQuote } from '../../utils/quotesUtils';
+import Button from '@mui/material/Button';
+import Slide from '@mui/material/Slide';
+import Snackbar from '@mui/material/Snackbar';
 import ClipLoader from "react-spinners/ClipLoader";
+import { MdLunchDining, MdOutlineLunchDining } from "react-icons/md";
+import { BiCoffee,BiSolidCoffee } from "react-icons/bi";
 
 import icon from '../../assets/icons/icon-biz-buddy.ico';
 
@@ -44,6 +49,54 @@ function HomeForm() {
         timeZoneName: 'short'
     });
   };
+
+  function SlideTransition(props) {
+    return <Slide {...props} direction="up" />;
+  }
+
+  const handleClockIn = () => {
+    const timeIn = new Date().toLocaleTimeString(); // Replace with actual time logic
+    setRecordedTimeIn(timeIn);
+    setShowTimeClocks(true);
+    setSnackbarState({
+      open: true,
+      Transition: SlideTransition,
+      message: `Successfully clocked in at ${timeIn}`,
+    });
+  };
+
+  const handleClockOut = () => {
+    const timeOut = new Date().toLocaleTimeString(); // Replace with actual time logic
+    setRecordedTimeOut(timeOut);
+    setShowTimeClocks(true);
+    setSnackbarState({
+      open: true,
+      Transition: SlideTransition,
+      message: `Successfully clocked out at ${timeOut}`,
+    });
+  };
+
+  const [snackbarState, setSnackbarState] = useState({
+    open: false,
+    Transition: SlideTransition,
+    message: '',
+  });
+  
+  const handleClick = (Transition) => () => {
+    setSnackbarState({
+      open: true,
+      Transition,
+    });
+  };
+  
+  const handleClose = () => {
+    setSnackbarState({
+      ...snackbarState,
+      open: false,
+    });
+  };
+  
+  
 
   const toggleClock = async () => {
     if (!isClockedIn) {
@@ -116,6 +169,26 @@ function HomeForm() {
     }
   }, [recordedTimeIn, recordedTimeOut]);
 
+  useEffect(() => {
+    if (recordedTimeIn) {
+      setSnackbarState({
+        open: true,
+        Transition: SlideTransition,
+        message: 'Successful Clock-In!',
+      });
+    }
+  }, [recordedTimeIn]);
+
+  useEffect(() => {
+    if (recordedTimeOut) {
+      setSnackbarState({
+        open: true,
+        Transition: SlideTransition,
+        message: 'Successful Clock-Out!',
+      });
+    }
+  }, [recordedTimeOut]);
+
   return (
     <div className="homeform-container">
       <div className="homeform-wrapper">
@@ -137,34 +210,45 @@ function HomeForm() {
         ) : (
           <div>
             <h3 className="homeform-question">
-              {isClockedIn ? 'You wish to clock out already?' : 'You wish to clock in already?'}
+              {isClockedIn ? 'Ready to clock out?' : 'Ready to clock in?'}
             </h3>
             <div className="homeform-button-container">
               <CustomButton onClick={toggleClock}>
                 {isClockedIn ? 'Clock-Out' : 'Clock-In'}
               </CustomButton>
             </div>
+            {isClockedIn && (
+              <div className="homeform-button-container">
+                 <h3 className="homeform-question">
+                  {isClockedIn ? '🍽️ Start Meal Break' : 'You wish to clock in already?'}
+                </h3>
+                <CustomButton onClick={toggleBreak}>
+                  {isClockedIn ? 'Start Meal Break' : 'End Meal Break'}
+                </CustomButton>
+                <h3 className="homeform-question">
+                  {isClockedIn ? '🥪 Take a lunch break?' : 'You wish to clock in already?'}
+                </h3>
+                <CustomButton onClick={toggleBreak}>
+                  {isClockedIn ? '🥪 Take a lunch break?' : 'End Lunch Break'}
+                </CustomButton>
+              </div>
+            )}
             {showQuote && (
               <h4 className="homeform-question-quotes gray-text">
                 {quote}
               </h4>
             )}
-            {recordedTimeIn && showTimeClocks && (
-                <>
-                  <hr className="homeform-hr-large"/>
-                    <p className="homeform-logged-time biz-text">This is the logged-in time clock: {recordedTimeIn}</p>
-                    {recordedTimeOut && 
-                    <>
-                      <hr className="homeform-hr"/>
-                    <p className="homeform-logged-time biz-text">This is the logged-out time clock: {recordedTimeOut}</p> </>}
-                    <hr className="homeform-hr"/>
-                    <p className="homeform-documentation-note">
-                      For documentation purposes, we recommend taking a screenshot of this screen.
-                    </p>
-                </>
-            )}
-          </div>
-        )}    
+
+            <Snackbar
+              open={snackbarState.open}
+              onClose={handleClose}
+              TransitionComponent={snackbarState.Transition}
+              message={snackbarState.message}
+              key={snackbarState.Transition.name}
+              autoHideDuration={2000} // Adjust as needed
+            />
+                </div>
+              )}    
         </div>
     </div>
   );

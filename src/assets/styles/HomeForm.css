@@ -23,6 +23,8 @@
   /* Section to align the button to the right */
   .homeform-button-container {
     text-align: right;
+    margin-top: 2vh;
+
   }
   
   /* Text styles */
