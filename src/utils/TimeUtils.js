@@ -26,3 +26,27 @@ export async function clockInClockOut() {
         return false;
     }
 }
+
+export async function archivedTransaction(shiftID) {
+    const token = localStorage.getItem('bb_session_token');
+
+    try {
+        const url = `${apiUrl}/api/v1/biz-buddy/time-logs/archived/${shiftID}`;
+
+        const response = await axios.put(url, {}, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            }
+        });
+
+        if (response.data) {
+            return response.data;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        // console.error('Error during archivedTransaction:', error);
+        return false;
+    }
+}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -34,36 +34,37 @@ function Shift() {
     const [ dialogOpen, setDialogOpen ] = useState(false);
     const [ editDialogOpen, setEditDialogOpen ] = useState(false);
     const [ currentTransaction, setCurrentTransaction ] = useState(null);
+    const [triggerFetch, setTriggerFetch] = useState(false);
 
     const actions = [
         { 
             icon: <BiListPlus />, 
             name: 'File a Manual Shift',
-            action: () => setDialogOpen(true) // Trigger the dialog when "Add" is clicked
+            action: () => setDialogOpen(true)
         },
         { icon: <BiSolidEdit />, name: 'File A Leave' },
 
     ];
 
-    useEffect(() => {
-        async function fetchTransactions() {
-            const result = await userTransactions();
-            if (result) {
-                setTransactions(result); 
-            }
-            setLoading(false);
+    const fetchTransactions = useCallback(async () => {
+        setLoading(true);
+        const result = await userTransactions();
+        if (result) {
+            setTransactions(result);
         }
+        setLoading(false);
+    }, []);
 
+    useEffect(() => {
+        fetchTransactions();
         async function fetchUserDetails() {
             const result = await userDetails();
-            if(result) {
+            if (result) {
                 setUserInfo(result);
             }
         }
-
-        fetchTransactions();
         fetchUserDetails();
-    }, []);
+    }, [fetchTransactions]);
 
     const paginatedRows = transactions.slice(
         (page - 1) * rowsPerPage,
@@ -86,7 +87,12 @@ function Shift() {
     const handleEditDialogClose = () => {
         setEditDialogOpen(false);
         setCurrentTransaction(null);
+        setTriggerFetch(prev => !prev);
     };
+
+    useEffect(() => {
+        fetchTransactions();
+    }, [fetchTransactions, triggerFetch]);
 
     return (
         <div style={{ padding: '10vh' }}>

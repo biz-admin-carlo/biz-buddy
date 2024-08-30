@@ -51,7 +51,7 @@ function Home() {
         timeZoneName: 'short'
     });
   };
-  
+
   function SlideTransition(props) {
     return <Slide {...props} direction="up" />;
   }
