@@ -4,12 +4,9 @@ import Avatar from '@mui/material/Avatar';
 import { clockInClockOut } from '../../utils/TimeUtils';
 import { checkExistingTransactions } from '../../utils/UserUtils';
 import { clockInQuotes, clockOutQuotes, getRandomQuote } from '../../utils/quotesUtils';
-import Button from '@mui/material/Button';
 import Slide from '@mui/material/Slide';
 import Snackbar from '@mui/material/Snackbar';
 import ClipLoader from "react-spinners/ClipLoader";
-import { MdLunchDining, MdOutlineLunchDining } from "react-icons/md";
-import { BiCoffee,BiSolidCoffee } from "react-icons/bi";
 
 import icon from '../../assets/icons/icon-biz-buddy.ico';
 
@@ -18,12 +15,11 @@ import '../../assets/fonts/color.css';
 import '../../assets/styles/LoginForm.css';
 import '../../assets/styles/HomeForm.css';
 
-function HomeForm() {
+function Home() {
 
   const [ currentTime, setCurrentTime ] = useState(new Date().toLocaleTimeString());
   const [ timeZone, setTimeZone ] = useState('');
   const [ isClockedIn, setIsClockedIn ] = useState(false);
-  const [ isBreakIn, setIsBreakIn ] = useState(false);
   const [ startTime, setStartTime ] = useState(null);
   const [ elapsedTime, setElapsedTime ] = useState('');
   const [ loading, setLoading ] = useState(false);
@@ -33,6 +29,12 @@ function HomeForm() {
   const [ quote, setQuote ] = useState(getRandomQuote(clockOutQuotes));
   const [ showQuote, setShowQuote ] = useState(true); 
   const [ exists, setExists ] = useState(null);
+  const [ clockedTime, setClockedTime ] = useState('');
+  const [ snackbarState, setSnackbarState ] = useState({
+    open: false,
+    message: '',
+    Transition: SlideTransition
+  });
 
   const formatDateAndTime = (isoString) => {
     if (!isoString) return null;
@@ -49,45 +51,10 @@ function HomeForm() {
         timeZoneName: 'short'
     });
   };
-
+  
   function SlideTransition(props) {
     return <Slide {...props} direction="up" />;
   }
-
-  const handleClockIn = () => {
-    const timeIn = new Date().toLocaleTimeString(); // Replace with actual time logic
-    setRecordedTimeIn(timeIn);
-    setShowTimeClocks(true);
-    setSnackbarState({
-      open: true,
-      Transition: SlideTransition,
-      message: `Successfully clocked in at ${timeIn}`,
-    });
-  };
-
-  const handleClockOut = () => {
-    const timeOut = new Date().toLocaleTimeString(); // Replace with actual time logic
-    setRecordedTimeOut(timeOut);
-    setShowTimeClocks(true);
-    setSnackbarState({
-      open: true,
-      Transition: SlideTransition,
-      message: `Successfully clocked out at ${timeOut}`,
-    });
-  };
-
-  const [snackbarState, setSnackbarState] = useState({
-    open: false,
-    Transition: SlideTransition,
-    message: '',
-  });
-  
-  const handleClick = (Transition) => () => {
-    setSnackbarState({
-      open: true,
-      Transition,
-    });
-  };
   
   const handleClose = () => {
     setSnackbarState({
@@ -95,8 +62,6 @@ function HomeForm() {
       open: false,
     });
   };
-  
-  
 
   const toggleClock = async () => {
     if (!isClockedIn) {
@@ -119,10 +84,6 @@ function HomeForm() {
     }, 15000);
   };
 
-  const toggleBreak = () => {
-    setIsBreakIn(!isBreakIn); 
-  };
-
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date().toLocaleTimeString());
@@ -134,6 +95,7 @@ function HomeForm() {
       setExists(result);
       if (result && typeof result === 'object') {
         setIsClockedIn(true);
+        setClockedTime(result.timeIn);
       }
     }
 
@@ -169,6 +131,28 @@ function HomeForm() {
     }
   }, [recordedTimeIn, recordedTimeOut]);
 
+    useEffect(() => {
+    let timer;
+    if (isClockedIn && clockedTime) {
+      const updateElapsedTime = () => {
+        const startTime = new Date(clockedTime);
+        const now = new Date();
+        const diff = now - startTime;
+  
+        const hours = Math.floor(diff / (1000 * 60 * 60)).toString().padStart(2, '0');
+        const minutes = Math.floor((diff / (1000 * 60)) % 60).toString().padStart(2, '0');
+        const seconds = Math.floor((diff / 1000) % 60).toString().padStart(2, '0');
+  
+        setElapsedTime(`${hours}:${minutes}:${seconds}`);
+      };
+  
+      timer = setInterval(updateElapsedTime, 1000);
+    } else {
+      setElapsedTime('');
+    }
+      return () => clearInterval(timer);
+  }, [isClockedIn, clockedTime]);
+
   useEffect(() => {
     if (recordedTimeIn) {
       setSnackbarState({
@@ -192,7 +176,7 @@ function HomeForm() {
   return (
     <div className="homeform-container">
       <div className="homeform-wrapper">
-
+      
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Avatar
             src={icon}
@@ -201,8 +185,8 @@ function HomeForm() {
           <h1 className="roboto-medium">BizBuddy</h1>
         </div>
 
-        <h3 className="homeform-subtitle">Asia/Manila</h3>
-        <h2 className="homeform-time">{currentTime}</h2>
+        <h3 className="homeform-subtitle">{timeZone}</h3>
+        <h2 className="homeform-time">{isClockedIn ? elapsedTime : currentTime}</h2>
         {loading ? (
         <div className="homeform-loader-container">
             <ClipLoader color="#36D7B7" size={50} />
@@ -217,22 +201,6 @@ function HomeForm() {
                 {isClockedIn ? 'Clock-Out' : 'Clock-In'}
               </CustomButton>
             </div>
-            {isClockedIn && (
-              <div className="homeform-button-container">
-                 <h3 className="homeform-question">
-                  {isClockedIn ? '🍽️ Start Meal Break' : 'You wish to clock in already?'}
-                </h3>
-                <CustomButton onClick={toggleBreak}>
-                  {isClockedIn ? 'Start Meal Break' : 'End Meal Break'}
-                </CustomButton>
-                <h3 className="homeform-question">
-                  {isClockedIn ? '🥪 Take a lunch break?' : 'You wish to clock in already?'}
-                </h3>
-                <CustomButton onClick={toggleBreak}>
-                  {isClockedIn ? '🥪 Take a lunch break?' : 'End Lunch Break'}
-                </CustomButton>
-              </div>
-            )}
             {showQuote && (
               <h4 className="homeform-question-quotes gray-text">
                 {quote}
@@ -245,7 +213,7 @@ function HomeForm() {
               TransitionComponent={snackbarState.Transition}
               message={snackbarState.message}
               key={snackbarState.Transition.name}
-              autoHideDuration={2000} // Adjust as needed
+              autoHideDuration={2000}
             />
                 </div>
               )}    
@@ -254,4 +222,4 @@ function HomeForm() {
   );
 }
 
-export default HomeForm;
+export default Home;
