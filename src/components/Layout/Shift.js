@@ -120,6 +120,7 @@ function Shift() {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell>Date</TableCell>
+                                        <TableCell align="right">Scheduled Shift</TableCell>
                                         <TableCell align="right">Clock-In</TableCell>
                                         <TableCell align="right">Clock-Out</TableCell>
                                         <TableCell align="right">Lunch</TableCell>
@@ -143,6 +144,7 @@ function Shift() {
                                                     })}
                                                 </Link>
                                             </TableCell>
+                                            <TableCell align="right">-</TableCell>
                                             <TableCell align="right">{row.timeIn ? new Date(row.timeIn).toLocaleTimeString() : '-'}</TableCell>
                                             <TableCell align="right">{row.timeOut ? new Date(row.timeOut).toLocaleTimeString() : '-'}</TableCell>
                                             <TableCell align="right">{row.lunchHours || '-'}</TableCell>
