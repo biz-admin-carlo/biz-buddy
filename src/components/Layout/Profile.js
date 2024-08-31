@@ -9,11 +9,11 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import ClipLoader from "react-spinners/ClipLoader";
 
-import BasicTable from '../Base/BasicTable';
+import ProfileDetailsTable from '../Base/ProfileDetailsTable';
 
 import '../../assets/styles/ProfileDetails.css';
 
-import { userDetails } from '../../utils/UserUtils';
+import { userDetails, userWorkDetails } from '../../utils/UserUtils';
 
 import icon1 from '../../assets/icons/icon-avatar-001.png';
 import icon2 from '../../assets/icons/icon-avatar-002.png';
@@ -47,19 +47,11 @@ const getRandomIcon = () => {
       </div>
     );
   }
-  
-  function ProfileInfo({ label, value }) {
-    return (
-      <div className="profile-info-item">
-        <p className="profile-info-label">{label}:</p>
-        <h3 className="profile-info-value">{value}</h3>
-      </div>
-    );
-  }
 
 function ProfileDetails() {
     const [icon, setIcon] = useState(icon1); 
     const [userInfo, setUserInfo] = useState('');
+    const [userWorkInfo, setUserWorkInfo] = useState('');
     const [loading, setLoading] = useState(true);
   
     useEffect(() => {
@@ -73,10 +65,19 @@ function ProfileDetails() {
         setLoading(false);
       }
       fetchUserDetails();
+
+      async function fetchUserWorkDetails() {
+        const result = await userWorkDetails();
+        if (result) {
+          setUserWorkInfo(result);
+        }
+        setLoading(false);
+      }
+      fetchUserWorkDetails();
     }, []);
   
     const fullName = `${userInfo.firstName} ${userInfo.lastName}`;
-    const teamPostion = userInfo.teamPosition ? userInfo.teamPosition : "-";
+    const teamPostion = userInfo.teamRole ? userInfo.teamRole : "-";
     const fetchedBirthDate = userInfo.birthday; 
     const birthDate = fetchedBirthDate 
       ? new Date(fetchedBirthDate).toLocaleDateString('en-US', {
@@ -93,7 +94,6 @@ function ProfileDetails() {
           day: 'numeric'
         })
       : "-";
-  
     return (
       <>
         <div className="profile-details-container">
@@ -112,12 +112,12 @@ function ProfileDetails() {
             <Typography>Profile Details</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <BasicTable />
+            <ProfileDetailsTable userInfo={userInfo} userWorkInfo={userWorkInfo}/>
 
           </AccordionDetails>
         </Accordion>
   
-        <Accordion>
+        {/* <Accordion>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls="change-password-content"
@@ -153,7 +153,7 @@ function ProfileDetails() {
               </Button>
             </div>
           </AccordionDetails>
-        </Accordion>
+        </Accordion> */}
   
         {loading && (
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>

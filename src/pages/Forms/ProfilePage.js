@@ -13,8 +13,11 @@ function ProfilePage() {
         </Helmet>
         
         <main>
-          <Profile />
+          <div style={{ padding: '80px', maxWidth: '1200px', margin: '0 auto' }}>
+            <Profile />
+          </div>
         </main>
+
       </div>
     );
   }
