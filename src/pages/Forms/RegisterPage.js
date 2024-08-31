@@ -1,6 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import Registration from '../../components/Layout/Registration'
+import RegisterUser from '../../components/Layout/RegisterUser';
+import RegisterTeam from '../../components/Layout/RegisterTeam';
 import useAuthRedirect from '../../hooks/useAuthRedirect';
 
 function RegisterPage() {
@@ -13,7 +14,7 @@ function RegisterPage() {
         </Helmet>
         
         <main>
-          <Registration />
+          <RegisterTeam />
         </main>
       </div>
     );

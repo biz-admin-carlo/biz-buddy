@@ -47,6 +47,27 @@ export async function userDetails() {
     }
 }
 
+export async function userWorkDetails() {
+    try {
+        const url = `${apiUrl}/api/v1/biz-buddy/users/work-details`;
+        const token = localStorage.getItem('bb_session_token');  
+
+        const response = await axios.get(url, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` 
+            }
+        });
+        if (response.status === 200) {
+            return response.data.workDetails; 
+        } else {
+            return false;
+        }
+    } catch (error) {
+        return false; 
+    }
+}
+
 export async function userTransactions() {
     try {
         const token = localStorage.getItem('bb_session_token');  

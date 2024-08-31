@@ -6,8 +6,10 @@ import TextField from '@mui/material/TextField';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Button from '@mui/material/Button';
-import CustomButton from '../../components/Base/Button';
+import CustomButton from '../Base/Button';
+import Avatar from '@mui/material/Avatar';
 
+import icon from '../../assets/icons/icon-biz-buddy.ico';
 
 import '../../assets/fonts/roboto.css';
 import '../../assets/fonts/color.css';
@@ -35,8 +37,16 @@ function RegistrationForm() {
         borderRadius: '10px',
         padding: '5vh'
       }}>
-          <h1 className='roboto-medium' style={{ textAlign: 'center' }}>BizBuddy</h1>
-          <h2 className='roboto-light' style={{ textAlign: 'left' }}>Register Account</h2>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '80%', maxWidth: '400px' }}>
+          <Avatar
+            src={icon}
+            className="profile-header-avatar"
+            style={{ marginRight: '0px' }}
+          />
+          <h1 className="roboto-medium">BizBuddy</h1>
+        </div>
+
+          <h2 className='roboto-light' style={{ textAlign: 'left' }}>Create Account</h2>
           <p className='roboto-regular' style={{ color: 'gray', textAlign: 'left', fontWeight: 'bold' }}>
             Registration of account is only available for Team Managers.
           </p>
@@ -92,9 +102,34 @@ function RegistrationForm() {
           }}
         />
 
+        <TextField
+          {...register("password", { required: true })}
+          type={showPassword ? 'text' : 'password'}  
+          helperText={errors.password && "Password is required"}
+          id="demo-password-textfield"
+          fullWidth
+          label="Confirm Password"
+          error={!!errors.password}
+          style={{ marginBottom: '16px', marginRight: '8px' }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />    
+
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
           <CustomButton>
-            Register
+            Create Account
           </CustomButton>
         </div>
       </div>
