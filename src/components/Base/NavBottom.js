@@ -8,8 +8,8 @@ function NavBottom() {
   const isLoggedIn = !!localStorage.getItem('bb_session_token'); 
   const navigate = useNavigate(); 
 
-  const [userInfo, setUserInfo] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [ userInfo, setUserInfo ] = useState(null);
+  const [ loading, setLoading ] = useState(true);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -19,7 +19,7 @@ function NavBottom() {
           setUserInfo(result);
         }
       } catch (error) {
-        console.error('Error fetching user details:', error);
+        // console.error('Error fetching user details:', error);
       } finally {
         setLoading(false);
       }
@@ -61,10 +61,10 @@ function NavBottom() {
           <span> | </span>
         </>
       ) : null}
-      <p className="nav-item roboto-light">
+      {/* <p className="nav-item roboto-light">
         <Link to="/leave" className="nav-link">Leaves</Link>
       </p>
-      <span> | </span>
+      <span> | </span> */}
       <p className="nav-item roboto-light">
         <Link to="/" className="nav-link" onClick={handleLogout}>Logout</Link>
       </p>

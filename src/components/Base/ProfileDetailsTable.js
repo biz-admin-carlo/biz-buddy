@@ -4,7 +4,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 
-export default function ProfileDetails({ userInfo, workInfo }) {
+export default function ProfileDetails({ userInfo, workInfo, birthDate }) {
 
   const displayValue = (value) => {
     return value === undefined || value === null || value === '' ? '-' : value;
@@ -29,7 +29,7 @@ export default function ProfileDetails({ userInfo, workInfo }) {
               Birthday
             </Typography>
             <Typography sx={{ color: 'text.secondary', ml: "20px", mb: "2px", fontStyle: "italic" }}>
-              {displayValue(workInfo ? workInfo.joinedOn : '')}
+              {displayValue(birthDate ? birthDate : '')}
             </Typography>
 
             <Typography variant="body2">

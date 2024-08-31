@@ -50,3 +50,28 @@ export async function archivedTransaction(shiftID) {
         return false;
     }
 }
+
+export async function manualShift(shiftInfo) {
+    const token = localStorage.getItem('bb_session_token');
+
+    try {
+        // {{LOCAL}}/api/v1/biz-buddy/time-logs/manual-shift
+        const url = `${apiUrl}/api/v1/biz-buddy/time-logs/manual-shift`;
+
+        const response = await axios.post(url, shiftInfo, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            }
+        });
+
+        if (response.data) {
+            return response.data;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        // console.error('Error during archivedTransaction:', error);
+        return false;
+    }
+}

@@ -112,7 +112,7 @@ function ProfileDetails() {
             <Typography>Profile Details</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <ProfileDetailsTable userInfo={userInfo} userWorkInfo={userWorkInfo}/>
+            <ProfileDetailsTable userInfo={userInfo} userWorkInfo={userWorkInfo} birthDate={birthDate}/>
 
           </AccordionDetails>
         </Accordion>

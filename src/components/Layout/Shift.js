@@ -34,16 +34,14 @@ function Shift() {
     const [ dialogOpen, setDialogOpen ] = useState(false);
     const [ editDialogOpen, setEditDialogOpen ] = useState(false);
     const [ currentTransaction, setCurrentTransaction ] = useState(null);
-    const [triggerFetch, setTriggerFetch] = useState(false);
+    const [ triggerFetch, setTriggerFetch ] = useState(false);
 
     const actions = [
         { 
             icon: <BiListPlus />, 
             name: 'File a Manual Shift',
             action: () => setDialogOpen(true)
-        },
-        { icon: <BiSolidEdit />, name: 'File A Leave' },
-
+        }
     ];
 
     const fetchTransactions = useCallback(async () => {
@@ -77,6 +75,8 @@ function Shift() {
 
     const handleCloseDialog = () => {
         setDialogOpen(false);
+        setTriggerFetch(prev => !prev);
+
     };
 
     const handleEditDialogOpen = (transaction) => {
@@ -147,9 +147,9 @@ function Shift() {
                                             <TableCell align="right">-</TableCell>
                                             <TableCell align="right">{row.timeIn ? new Date(row.timeIn).toLocaleTimeString() : '-'}</TableCell>
                                             <TableCell align="right">{row.timeOut ? new Date(row.timeOut).toLocaleTimeString() : '-'}</TableCell>
-                                            <TableCell align="right">{row.lunchHours || '-'}</TableCell>
-                                            <TableCell align="right">{row.breakHours || '-'}</TableCell>
-                                            <TableCell align="right">{row.totalHours}</TableCell>
+                                            <TableCell align="right">{row.totalLunchBreakTime || '-'}</TableCell>
+                                            <TableCell align="right">{row.totalBreakTime || '-'}</TableCell>
+                                            <TableCell align="right">{row.computedTotalTimeClock || '-'}</TableCell>
                                             <TableCell align="right">
                                                 <BiSolidEdit 
                                                     size={22} 
@@ -157,7 +157,7 @@ function Shift() {
                                                     onClick={() => handleEditDialogOpen(row)} 
                                                 />
                                             </TableCell>                                        
-                                            <TableCell align="right">Pending</TableCell>
+                                            <TableCell align="right">{row.status}</TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>
