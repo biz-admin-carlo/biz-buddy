@@ -55,7 +55,6 @@ export async function manualShift(shiftInfo) {
     const token = localStorage.getItem('bb_session_token');
 
     try {
-        // {{LOCAL}}/api/v1/biz-buddy/time-logs/manual-shift
         const url = `${apiUrl}/api/v1/biz-buddy/time-logs/manual-shift`;
 
         const response = await axios.post(url, shiftInfo, {
@@ -65,6 +64,55 @@ export async function manualShift(shiftInfo) {
             }
         });
 
+        if (response.data) {
+            return response.data;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        // console.error('Error during archivedTransaction:', error);
+        return false;
+    }
+}
+
+export async function startLunchBreak() {
+    const token = localStorage.getItem('bb_session_token');
+
+    try {
+        const url = `${apiUrl}/api/v1/biz-buddy/time-logs/lunch-time`;
+
+        const response = await axios.put(url, {}, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            }
+        });
+        console.log(response.data);
+        if (response.data) {
+            return response.data;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        // console.error('Error during archivedTransaction:', error);
+        return false;
+    }
+}
+
+export async function startCoffeeBreak() {
+    const token = localStorage.getItem('bb_session_token');
+
+    try {
+        const url = `${apiUrl}/api/v1/biz-buddy/time-logs/break-time`;
+
+        const response = await axios.put(url, {}, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            }
+        });
+        
+        console.log(response.data);
         if (response.data) {
             return response.data;
         } else {

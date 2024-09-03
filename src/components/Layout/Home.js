@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import CustomButton from '../Base/Button';
 import Avatar from '@mui/material/Avatar';
-import { clockInClockOut } from '../../utils/TimeUtils';
+import { clockInClockOut, startLunchBreak, startCoffeeBreak } from '../../utils/TimeUtils';
 import { checkExistingTransactions } from '../../utils/UserUtils';
 import { clockInQuotes, clockOutQuotes, getRandomQuote } from '../../utils/quotesUtils';
 import Slide from '@mui/material/Slide';
@@ -173,6 +173,30 @@ function Home() {
     }
   }, [recordedTimeOut]);
 
+  const handleLunchBreak = async () => {
+    // Logic to handle lunch break
+    setLoading(true);
+    const result = await startLunchBreak();
+    setLoading(false);
+    setSnackbarState({
+      open: true,
+      message: 'Lunch Break Started!',
+      Transition: SlideTransition
+    });
+  };
+
+  const handleCoffeeBreak = async () => {
+    // Logic to handle coffee break
+    setLoading(true);
+    const result = await startCoffeeBreak();
+    setLoading(false);
+    setSnackbarState({
+      open: true,
+      message: 'Coffee Break Started!',
+      Transition: SlideTransition
+    });
+  };
+
   return (
     <div className="homeform-container">
       <div className="homeform-wrapper">
@@ -186,7 +210,7 @@ function Home() {
         </div>
 
         <h3 className="homeform-subtitle">{timeZone}</h3>
-        <h2 className="homeform-time">{isClockedIn ? elapsedTime : currentTime}</h2>
+        <h2 className="homeform-time">{isClockedIn ? elapsedTime : currentTime }</h2>
         {loading ? (
         <div className="homeform-loader-container">
             <ClipLoader color="#36D7B7" size={50} />
@@ -201,6 +225,7 @@ function Home() {
                 {isClockedIn ? 'Clock-Out' : 'Clock-In'}
               </CustomButton>
             </div>
+
             {showQuote && (
               <h4 className="homeform-question-quotes gray-text">
                 {quote}
