@@ -10,13 +10,16 @@ import Paper from '@mui/material/Paper';
 import Pagination from '@mui/material/Pagination';
 import ClipLoader from "react-spinners/ClipLoader";
 import { BiSolidEdit, BiListPlus } from "react-icons/bi";
+import { BsFileEarmarkSpreadsheetFill, BsFillFileEarmarkPdfFill } from "react-icons/bs";
 
 import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
 
 import FormDialog from '../Form/DialogForm';
-import EditDialogForm from '../Form/EditDialogForm'
+import EditDialogForm from '../Form/EditDialogForm';
+import GenerateSpreadsheet from '../Form/GenerateSpreadsheet'; 
+import GeneratePDF from '../Form/GeneratePDF';
 
 import '../../assets/fonts/roboto.css';
 import '../../assets/fonts/color.css';
@@ -35,12 +38,25 @@ function Shift() {
     const [ editDialogOpen, setEditDialogOpen ] = useState(false);
     const [ currentTransaction, setCurrentTransaction ] = useState(null);
     const [ triggerFetch, setTriggerFetch ] = useState(false);
+    const [ showSpreadsheetComponent, setShowSpreadsheetComponent ] = useState(false);
+    const [ showPDFComponent, setShowPDFComponent ] = useState(false);
+
 
     const actions = [
         { 
             icon: <BiListPlus />, 
             name: 'File a Manual Shift',
             action: () => setDialogOpen(true)
+        },
+        { 
+            icon: <BsFileEarmarkSpreadsheetFill />, 
+            name: 'Generate Spreadsheet File',
+            action: () => setShowSpreadsheetComponent(true)
+        },
+        { 
+            icon: <BsFillFileEarmarkPdfFill />, 
+            name: 'Generate PDF File',
+            action: () => setShowPDFComponent(true)
         }
     ];
 
@@ -88,6 +104,11 @@ function Shift() {
         setEditDialogOpen(false);
         setCurrentTransaction(null);
         setTriggerFetch(prev => !prev);
+    };
+
+    const handleDownloadComplete = () => {
+        setShowSpreadsheetComponent(false);
+        setShowPDFComponent(false);
     };
 
     useEffect(() => {
@@ -194,7 +215,22 @@ function Shift() {
 
             <FormDialog open={dialogOpen} onClose={handleCloseDialog} />
             <EditDialogForm open={editDialogOpen} onClose={handleEditDialogClose} transaction={currentTransaction} />
+            
+            {showSpreadsheetComponent && (
+                <GenerateSpreadsheet 
+                    transactions={transactions} 
+                    userName={userInfo.firstName} 
+                    onDownloadComplete={handleDownloadComplete} 
+                />
+            )}
 
+            {showPDFComponent && (
+                <GeneratePDF 
+                    transactions={transactions} 
+                    userName={userInfo.firstName} 
+                    onDownloadComplete={handleDownloadComplete} 
+                />
+            )}
         </div>
     );
     
