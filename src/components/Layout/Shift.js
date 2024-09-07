@@ -26,6 +26,7 @@ import '../../assets/fonts/color.css';
 import '../../assets/styles/LoginForm.css';
 
 import { userTransactions, userDetails } from '../../utils/UserUtils';
+import { formatMillisecondsToTime } from '../../utils/FormatUtils';
 
 function Shift() {
     const [ page, setPage ] = useState(1);
@@ -41,6 +42,7 @@ function Shift() {
     const [ showSpreadsheetComponent, setShowSpreadsheetComponent ] = useState(false);
     const [ showPDFComponent, setShowPDFComponent ] = useState(false);
 
+    console.log(transactions);
 
     const actions = [
         { 
@@ -168,8 +170,8 @@ function Shift() {
                                             <TableCell align="right">-</TableCell>
                                             <TableCell align="right">{row.timeIn ? new Date(row.timeIn).toLocaleTimeString() : '-'}</TableCell>
                                             <TableCell align="right">{row.timeOut ? new Date(row.timeOut).toLocaleTimeString() : '-'}</TableCell>
-                                            <TableCell align="right">{row.totalLunchBreakTime || '-'}</TableCell>
-                                            <TableCell align="right">{row.totalBreakTime || '-'}</TableCell>
+                                            <TableCell align="right">{formatMillisecondsToTime(row.totalLunchBreakTime) || '-'}</TableCell>
+                                            <TableCell align="right">{formatMillisecondsToTime(row.totalBreakTime) || '-'}</TableCell>
                                             <TableCell align="right">{row.computedTotalTimeClock || '-'}</TableCell>
                                             <TableCell align="right">
                                                 <BiSolidEdit 
@@ -213,7 +215,7 @@ function Shift() {
                 ))}
             </SpeedDial>
 
-            <FormDialog open={dialogOpen} onClose={handleCloseDialog} />
+            <FormDialog open={dialogOpen} onClose={handleCloseDialog} transaction={currentTransaction} />
             <EditDialogForm open={editDialogOpen} onClose={handleEditDialogClose} transaction={currentTransaction} />
             
             {showSpreadsheetComponent && (
