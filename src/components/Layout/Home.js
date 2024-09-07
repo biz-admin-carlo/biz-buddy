@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { formatDateAndTime } from '../../utils/FormatUtils';
-import { clockOutQuotes, getRandomQuote } from '../../utils/QuotesUtils.js';
-import { clockInClockOut, startLunchBreak, startCoffeeBreak } from '../../utils/TimeUtils.js';
+import { clockOutQuotes, getRandomQuote } from '../../utils/QuotesUtils';
+import { clockInClockOut, startLunchBreak, startCoffeeBreak } from '../../utils/TimeUtils';
 import { checkExistingTransactions } from '../../utils/UserUtils';
 
 import ActionButtons from '../Base/ActionButtons';
