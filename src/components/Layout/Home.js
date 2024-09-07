@@ -11,6 +11,7 @@ import CustomButton from '../Base/Button';
 import Header from '../Base/Header';
 
 import Slide from '@mui/material/Slide';
+import Snackbar from '@mui/material/Snackbar';
 import ClipLoader from "react-spinners/ClipLoader";
 
 import '../../assets/fonts/roboto.css';
@@ -20,24 +21,34 @@ import '../../assets/styles/HomeForm.css';
 
 function Home() {
 
-  const [ currentTime, setCurrentTime ] = useState(new Date().toLocaleTimeString());
-  const [ timeZone, setTimeZone ] = useState('');
-  const [ isClockedIn, setIsClockedIn ] = useState(false);
-  const [ startTime, setStartTime ] = useState(null);
-  const [ elapsedTime, setElapsedTime ] = useState('');
-  const [ loading, setLoading ] = useState(false);
-  const [ recordedTimeIn, setRecordedTimeIn ] = useState(''); 
-  const [ recordedTimeOut, setRecordedTimeOut ] = useState('');
-  const [ showTimeClocks, setShowTimeClocks ] = useState(true);
-  const [ quote, setQuote ] = useState(getRandomQuote(clockOutQuotes));
-  const [ showQuote, setShowQuote ] = useState(true); 
-  const [ exists, setExists ] = useState(null);
-  const [ clockedTime, setClockedTime ] = useState('');
-  const [ snackbarState, setSnackbarState ] = useState({
+  const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
+  const [timeZone, setTimeZone] = useState('');
+  const [isClockedIn, setIsClockedIn] = useState(false);
+  const [startTime, setStartTime] = useState(null);
+  const [elapsedTime, setElapsedTime] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [recordedTimeIn, setRecordedTimeIn] = useState(''); 
+  const [recordedTimeOut, setRecordedTimeOut] = useState('');
+  const [showTimeClocks, setShowTimeClocks] = useState(true);
+  const [quote, setQuote] = useState(getRandomQuote(clockOutQuotes));
+  const [showQuote, setShowQuote] = useState(true); 
+  const [exists, setExists] = useState(null);
+  const [clockedTime, setClockedTime] = useState('');
+  const [snackbarState, setSnackbarState] = useState({
     open: false,
     message: '',
     Transition: SlideTransition
   });
+
+  const [snackLunchOpen, setSnackLunchOpen] = useState(false); // Set to false initially
+  const [snackCoffeeOpen, setSnackCoffeeOpen] = useState(false); // Set to false initially
+  const [lunchDetails, setLunchDetails] = useState({ isLunchBreakStarted: false });
+  const [lunchBreakClicks, setLunchBreakClicks] = useState(0); // Track lunch break clicks
+  const [coffeeBreakClicks, setCoffeeBreakClicks] = useState(0); // Track coffee break clicks
+  const [coffeeDetails, setCoffeeDetails] = useState({ isCoffeeBreakStarted: false });
+
+  const [lunchMessage, setLunchMessage] = useState('');
+  const [coffeeMessage, setCoffeeMessage] = useState('');
 
   function SlideTransition(props) {
     return <Slide {...props} direction="up" />;
@@ -51,24 +62,13 @@ function Home() {
   };
 
   const toggleClock = async () => {
-    if (!isClockedIn) {
-      setQuote(getRandomQuote(clockInQuotes)); 
-    } else {
-      setQuote(getRandomQuote(clockOutQuotes)); 
-    }
-    setShowQuote(true);
-  
     setLoading(true);
     const result = await clockInClockOut();
-    
     setRecordedTimeIn(formatDateAndTime(result.data.timeIn));
     setRecordedTimeOut(formatDateAndTime(result.data.timeOut));
     setLoading(false);
     setIsClockedIn(!isClockedIn);
-  
-    setTimeout(() => {
-      setShowQuote(false);
-    }, 15000);
+    setTimeout(() => setShowQuote(false), 15000);
   };
 
   useEffect(() => {
@@ -80,108 +80,95 @@ function Home() {
     async function fetchTransactions() {
       const result = await checkExistingTransactions();
       setExists(result);
+      
       if (result && typeof result === 'object') {
-        setIsClockedIn(true);
+        setIsClockedIn(true); // User is clocked in
         setClockedTime(result.timeIn);
+  
+        // Handle coffee break state initialization
+        if (result.isCoffeeBreakStarted) {
+          setCoffeeDetails({ isCoffeeBreakStarted: true });
+          setSnackCoffeeOpen(true); // If coffee break is already started, show the Snackbar
+        } else {
+          setCoffeeDetails({ isCoffeeBreakStarted: false });
+          setSnackCoffeeOpen(false);
+        }
       }
     }
 
     fetchTransactions();
 
     return () => clearInterval(timer);
-  }, []);
+  }, [isClockedIn]);
 
   useEffect(() => {
-    let timer = null;
-    if (isClockedIn) {
-      timer = setInterval(() => {
-        const now = new Date();
-        const diff = now - startTime;
-        const hours = Math.floor(diff / 3600000);
-        const minutes = Math.floor((diff % 3600000) / 60000);
-        const seconds = Math.floor(((diff % 360000) % 60000) / 1000);
-        setElapsedTime(`${hours}:${minutes}:${seconds}`);
-      }, 1000);
-    } else {
-      clearInterval(timer);
-    }
-    return () => clearInterval(timer);
-  }, [isClockedIn, startTime]);
-
-  useEffect(() => {
-    if (recordedTimeIn && recordedTimeOut) {
-        const timer = setTimeout(() => {
-            setShowTimeClocks(false); 
-        }, 120000);
-
-        return () => clearTimeout(timer); 
-    }
-  }, [recordedTimeIn, recordedTimeOut]);
-
-    useEffect(() => {
     let timer;
     if (isClockedIn && clockedTime) {
       const updateElapsedTime = () => {
         const startTime = new Date(clockedTime);
         const now = new Date();
         const diff = now - startTime;
-  
+
         const hours = Math.floor(diff / (1000 * 60 * 60)).toString().padStart(2, '0');
         const minutes = Math.floor((diff / (1000 * 60)) % 60).toString().padStart(2, '0');
         const seconds = Math.floor((diff / 1000) % 60).toString().padStart(2, '0');
-  
+
         setElapsedTime(`${hours}:${minutes}:${seconds}`);
       };
-  
+
       timer = setInterval(updateElapsedTime, 1000);
     } else {
       setElapsedTime('');
     }
-      return () => clearInterval(timer);
+    return () => clearInterval(timer);
   }, [isClockedIn, clockedTime]);
 
-  useEffect(() => {
-    if (recordedTimeIn) {
-      setSnackbarState({
-        open: true,
-        Transition: SlideTransition,
-        message: 'Successful Clock-In!',
-      });
-    }
-  }, [recordedTimeIn]);
-
-  useEffect(() => {
-    if (recordedTimeOut) {
-      setSnackbarState({
-        open: true,
-        Transition: SlideTransition,
-        message: 'Successful Clock-Out!',
-      });
-    }
-  }, [recordedTimeOut]);
-
   const handleLunchBreak = async () => {
-    // Logic to handle lunch break
-    setLoading(true);
-    const result = await startLunchBreak();
-    setLoading(false);
-    setSnackbarState({
-      open: true,
-      message: 'Lunch Break Started!',
-      Transition: SlideTransition
-    });
+    if (lunchBreakClicks < 2) {
+      try {
+        setLoading(true);
+        const result = await startLunchBreak();
+        setLunchDetails(result.data);
+        setLunchBreakClicks((prev) => prev + 1);
+        
+        // Update the message based on the action (start/end)
+        if (result.data.isLunchBreakStarted) {
+          setLunchMessage("You are still in Lunch Break!");
+        } else {
+          setLunchMessage("Lunch Break ended successfully!");
+        }
+        
+        setSnackLunchOpen(true); // Always open the Snackbar when action occurs
+      } catch (error) {
+        console.error('Error handling lunch break:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
   };
-
+  
   const handleCoffeeBreak = async () => {
-    // Logic to handle coffee break
-    setLoading(true);
-    const result = await startCoffeeBreak();
-    setLoading(false);
-    setSnackbarState({
-      open: true,
-      message: 'Coffee Break Started!',
-      Transition: SlideTransition
-    });
+    if (coffeeBreakClicks < 2) {
+      try {
+        setLoading(true);
+        const result = await startCoffeeBreak();
+        setCoffeeDetails(result.data);
+        setCoffeeBreakClicks((prev) => prev + 1);
+        
+        // Update the message based on the action (start/end)
+        if (result.data.isCoffeeBreakStarted) {
+          setCoffeeMessage("Coffee Break ended successfully");
+        } else {
+          setCoffeeMessage("You are still in Coffee Break!!");
+        }
+        
+        setSnackCoffeeOpen(true); // Always open the Snackbar when action occurs
+      } catch (error) {
+        console.error('Error handling coffee break:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
   };
 
   return (
@@ -211,9 +198,43 @@ function Home() {
               </h4>
             )}
             <CustomSnackbar open={snackbarState.open} message={snackbarState.message} onClose={() => setSnackbarState({ ...snackbarState, open: false })} />
-            <ActionButtons onLunchBreak={handleLunchBreak} onCoffeeBreak={handleCoffeeBreak} />
-          </div>
-          )}    
+            {isClockedIn && (
+              <ActionButtons
+                onLunchBreak={handleLunchBreak}
+                onCoffeeBreak={handleCoffeeBreak}
+                lunchLabel={lunchDetails.isLunchBreakStarted ? "Want to end your Lunch?" : "Want to have your Lunch?"}
+                breakLabel={coffeeDetails.isCoffeeBreakStarted ? "Done with your Coffee?" : "Want to have your Coffee?"}
+                lunchBreakClicks={lunchBreakClicks}
+                coffeeBreakClicks={coffeeBreakClicks}
+              />
+
+            )}
+            </div>
+            )}  
+
+            {/* Snackbar for Lunch Break */}
+            {isClockedIn && (
+              <>
+                <Snackbar
+                  anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+                  open={snackLunchOpen}
+                  onClose={() => setSnackLunchOpen(false)}
+                  message={lunchMessage}  // Dynamic message
+                  key="topleft-lunch"
+                />
+              </>
+            )}
+            {isClockedIn && (
+              <>    
+                <Snackbar
+                  anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+                  open={snackCoffeeOpen}
+                  onClose={() => setSnackCoffeeOpen(false)}
+                  message={coffeeMessage}  // Dynamic message
+                  key="topleft-coffee"
+                />
+              </>
+            )}
         </div>
     </div>
   );

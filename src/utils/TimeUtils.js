@@ -87,7 +87,6 @@ export async function startLunchBreak() {
                 'Authorization': `Bearer ${token}`,
             }
         });
-        console.log(response.data);
         if (response.data) {
             return response.data;
         } else {
@@ -112,7 +111,6 @@ export async function startCoffeeBreak() {
             }
         });
         
-        console.log(response.data);
         if (response.data) {
             return response.data;
         } else {

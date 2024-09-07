@@ -47,7 +47,7 @@ export default function EditFormDialog({ open, onClose, transaction }) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const formJson = Object.fromEntries(formData.entries());
-    console.log("Edited Form Data:", formJson);
+    // console.log("Edited Form Data:", formJson);
     handleClose();
   };
 
