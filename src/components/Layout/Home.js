@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import CustomButton from '../Base/Button';
-import Avatar from '@mui/material/Avatar';
+import { formatDateAndTime } from '../../utils/FormatUtils';
+import { clockInQuotes, clockOutQuotes, getRandomQuote } from '../../utils/QuotesUtils';
 import { clockInClockOut, startLunchBreak, startCoffeeBreak } from '../../utils/TimeUtils';
 import { checkExistingTransactions } from '../../utils/UserUtils';
-import { clockInQuotes, clockOutQuotes, getRandomQuote } from '../../utils/quotesUtils';
-import Slide from '@mui/material/Slide';
-import Snackbar from '@mui/material/Snackbar';
-import ClipLoader from "react-spinners/ClipLoader";
 
-import icon from '../../assets/icons/icon-biz-buddy.ico';
+import ActionButtons from '../Base/ActionButtons';
+import ClockDisplay from '../Base/ClockDisplay';
+import CustomSnackbar from '../Base/CustomSnackbar';
+import CustomButton from '../Base/Button';
+import Header from '../Base/Header';
+
+import Slide from '@mui/material/Slide';
+import ClipLoader from "react-spinners/ClipLoader";
 
 import '../../assets/fonts/roboto.css';
 import '../../assets/fonts/color.css';
@@ -35,22 +38,6 @@ function Home() {
     message: '',
     Transition: SlideTransition
   });
-
-  const formatDateAndTime = (isoString) => {
-    if (!isoString) return null;
-    const date = new Date(isoString);
-    if (isNaN(date.getTime())) return null; 
-    return date.toLocaleString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long', 
-        day: 'numeric',
-        hour: '2-digit', 
-        minute: '2-digit', 
-        second: '2-digit', 
-        timeZoneName: 'short'
-    });
-  };
 
   function SlideTransition(props) {
     return <Slide {...props} direction="up" />;
@@ -200,17 +187,9 @@ function Home() {
   return (
     <div className="homeform-container">
       <div className="homeform-wrapper">
-      
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Avatar
-            src={icon}
-            className="profile-header-avatar"
-          />
-          <h1 className="roboto-medium">BizBuddy</h1>
-        </div>
-
+        <Header />
         <h3 className="homeform-subtitle">{timeZone}</h3>
-        <h2 className="homeform-time">{isClockedIn ? elapsedTime : currentTime }</h2>
+        <ClockDisplay isClockedIn={isClockedIn} currentTime={currentTime} elapsedTime={elapsedTime} />
         {loading ? (
         <div className="homeform-loader-container">
             <ClipLoader color="#36D7B7" size={50} />
@@ -231,17 +210,10 @@ function Home() {
                 {quote}
               </h4>
             )}
-
-            <Snackbar
-              open={snackbarState.open}
-              onClose={handleClose}
-              TransitionComponent={snackbarState.Transition}
-              message={snackbarState.message}
-              key={snackbarState.Transition.name}
-              autoHideDuration={2000}
-            />
-                </div>
-              )}    
+            <CustomSnackbar open={snackbarState.open} message={snackbarState.message} onClose={() => setSnackbarState({ ...snackbarState, open: false })} />
+            <ActionButtons onLunchBreak={handleLunchBreak} onCoffeeBreak={handleCoffeeBreak} />
+          </div>
+          )}    
         </div>
     </div>
   );

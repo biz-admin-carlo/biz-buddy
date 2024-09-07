@@ -213,7 +213,7 @@ function Shift() {
                 ))}
             </SpeedDial>
 
-            <FormDialog open={dialogOpen} onClose={handleCloseDialog} />
+            <FormDialog open={dialogOpen} onClose={handleCloseDialog} transaction={currentTransaction} />
             <EditDialogForm open={editDialogOpen} onClose={handleEditDialogClose} transaction={currentTransaction} />
             
             {showSpreadsheetComponent && (
