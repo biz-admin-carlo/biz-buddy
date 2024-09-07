@@ -1,5 +1,5 @@
-export const clockInQuotes = [
-    "The secret of getting ahead is getting started.",
+export const clockOutQuotes = [
+  "The secret of getting ahead is getting started.",
     "Focus on being productive instead of busy.",
     "Success usually comes to those who are too busy to be looking for it.",
     "Well begun is half done.",
@@ -48,11 +48,7 @@ export const clockInQuotes = [
     "Good things come to people who wait, but better things come to those who go out and get them.",
     "Work hard and be kind and amazing things will happen.",
     "Success is doing ordinary things extraordinarily well.",
-    "The man who moves a mountain begins by carrying away small stones."
-  ];
-  
-  
-  export const clockOutQuotes = [
+    "The man who moves a mountain begins by carrying away small stones.",
     "Good Job!",
     "Rest and recharge; you've earned it.",
     "Well done! Enjoy your time off.",
@@ -101,11 +97,10 @@ export const clockInQuotes = [
     "Switch off, unwind, and recharge.",
     "Rest and self-care are so important. Take time to replenish your energy.",
     "Relax and recharge; you’ve done a fantastic job."
-  ];
+];
   
-  
-  export const getRandomQuote = (quotesArray) => {
-    const randomIndex = Math.floor(Math.random() * quotesArray.length);
-    return quotesArray[randomIndex];
-  };
+export const getRandomQuote = (quotesArray) => {
+  const randomIndex = Math.floor(Math.random() * quotesArray.length);
+  return quotesArray[randomIndex];
+};
   
