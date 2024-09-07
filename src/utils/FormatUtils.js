@@ -12,5 +12,19 @@ export const formatDateAndTime = (isoString) => {
       second: '2-digit',
       timeZoneName: 'short'
     });
-  };
-  
+};
+
+export const formatMillisecondsToTime = (ms) => {
+  let seconds = Math.floor(ms / 1000);
+  let minutes = Math.floor(seconds / 60);
+  let hours = Math.floor(minutes / 60);
+
+  minutes = minutes % 60;
+
+  const formattedTime = [
+      String(hours).padStart(2, '0'), 
+      String(minutes).padStart(2, '0')
+  ].join(':');
+
+  return formattedTime;
+};
