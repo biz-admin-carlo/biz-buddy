@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 
-const APP_VERSION = '1.3.3';
+const APP_VERSION = '1.3.4';
 
 function checkStorageVersion() {
     const storedLocalVersion = localStorage.getItem('appVersion');
