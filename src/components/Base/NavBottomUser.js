@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import NavBottomSysAd from './NavBottomSysAd';
-import NavBottomUser from './NavBottomUser';
 
 import '../../assets/styles/NavButton.css';
 import { userDetails } from '../../utils/UserUtils';
 
-function NavBottom() {
+function NavBottomUser() {
   const isLoggedIn = !!localStorage.getItem('bb_session_token'); 
   const navigate = useNavigate(); 
 
@@ -41,17 +39,33 @@ function NavBottom() {
     return null; // Don't render anything if not logged in or loading
   }
 
-  if (userInfo?.isSysAd) {
-    return <NavBottomSysAd />;
-  }
-
-  if (userInfo?.isUser) {
-    return <NavBottomUser />;
-  }
-
   return (
-
     <div className="nav-container-bottom">
+      <p className="nav-item roboto-light">
+        <Link to="/" className="nav-link">Home</Link>
+      </p>
+      <span> | </span>
+      <p className="nav-item roboto-light">
+        <Link to="/shifts" className="nav-link">Shifts</Link>
+      </p>
+      <span> | </span>
+      <p className="nav-item roboto-light">
+        <Link to="/profile" className="nav-link">Profile</Link>
+      </p>
+      <span> | </span>
+      {userInfo && userInfo.isManager && !userInfo.isUser ? (
+        <>
+          <p className="nav-item roboto-light">
+            <Link to="/team" className="nav-link">Team</Link>
+          </p>
+          <span> | </span>
+        </>
+      ) : null}
+      {/* <p className="nav-item roboto-light">
+        <Link to="/leave" className="nav-link">Leaves</Link>
+      </p>
+      <span> | </span> */}
+
       <p className="nav-item roboto-light">
         <Link to="/" className="nav-link" onClick={handleLogout}>Logout</Link>
       </p>
@@ -59,4 +73,4 @@ function NavBottom() {
   );
 }
 
-export default NavBottom;
+export default NavBottomUser;

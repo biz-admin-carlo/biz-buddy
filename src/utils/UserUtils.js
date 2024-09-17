@@ -110,3 +110,34 @@ export async function checkExistingTransactions() {
         return false;
     }
 }
+
+export async function createUser(data) {
+    try {
+        const { email, password, firstName, lastName, birthday, teamName, teamRole } = data;
+
+        const url = `${apiUrl}/api/v1/biz-buddy/users/register`;
+
+        const response = await axios.post(url, {
+            email,
+            password,
+            firstName,
+            lastName,
+            birthday,
+            teamName,
+            teamRole,
+        }, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.data && response.data.userId) {
+            return true;
+        } else {
+            return { success: false, message: 'Failed to register user.' };
+        }
+    } catch (error) {
+        console.error('Error creating user:', error);
+        return { success: false, message: 'An error occurred during user registration.' };
+    }
+}

@@ -1,23 +1,23 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import ShiftLayout from '../../components/Layout/Shift';
+import BizSolutionsLayout from '../../components/Layout/BizSolutionsLayout';
 import useAuthRedirect from '../../hooks/useAuthRedirect'; 
 
-function ShiftPage() {
+function BizSolutions() {
   useAuthRedirect();
 
   return (
     <div>
         <Helmet>
-            <title>BizBuddy | Shifts</title>
+            <title>BizBuddy | BizSolutions</title>
         </Helmet>
         
         <main>
-          <ShiftLayout />
+          <BizSolutionsLayout />
         </main>
 
     </div>
   );
 }
 
-export default ShiftPage;
+export default BizSolutions;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import RegisterUser from '../../components/Layout/RegisterUser';
+// import RegisterUser from '../../components/Layout/RegisterUser';
 import RegisterTeam from '../../components/Layout/RegisterTeam';
 import useAuthRedirect from '../../hooks/useAuthRedirect';
 

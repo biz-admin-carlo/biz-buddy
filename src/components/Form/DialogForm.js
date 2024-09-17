@@ -123,7 +123,7 @@ export default function FormDialog({ open, onClose }) {
           />
 
           {/* Lunch Break In Field */}
-          <TextField
+          {/* <TextField
             required
             margin="dense"
             id="lunchBreakIn"
@@ -134,10 +134,10 @@ export default function FormDialog({ open, onClose }) {
             InputLabelProps={{
               shrink: true,
             }}
-          />
+          /> */}
 
           {/* Lunch Break Out Field */}
-          <TextField
+          {/* <TextField
             required
             margin="dense"
             id="lunchBreakOut"
@@ -148,10 +148,10 @@ export default function FormDialog({ open, onClose }) {
             InputLabelProps={{
               shrink: true,
             }}
-          />
+          /> */}
 
           {/* Rest Break In Field */}
-          <TextField
+          {/* <TextField
             required
             margin="dense"
             id="breakIn"
@@ -162,10 +162,10 @@ export default function FormDialog({ open, onClose }) {
             InputLabelProps={{
               shrink: true,
             }}
-          />
+          /> */}
 
           {/* Rest Break Out Field */}
-          <TextField
+          {/* <TextField
             required
             margin="dense"
             id="breakOut"
@@ -176,7 +176,7 @@ export default function FormDialog({ open, onClose }) {
             InputLabelProps={{
               shrink: true,
             }}
-          />
+          /> */}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} disabled={loading}>Cancel</Button>

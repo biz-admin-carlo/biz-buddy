@@ -1,0 +1,27 @@
+.bottom-right {
+    position: fixed; /* Fixes the position relative to the viewport */
+    bottom: 3vh; /* Positions it at the bottom */
+    right: 3vh; /* Positions it at the right */
+    margin: 10px; /* Optional: Adds a small margin from the edges */
+    padding: 10px; /* Optional: Adds some padding */
+}
+
+.bottom-right p {
+    margin: 10px; /* Optional: Adds a small margin from the edges */
+    padding: 10px; /* Optional: Adds some padding */
+}
+
+.bottom-right .pdf:hover {
+    text-decoration: underline dotted; /* Adds a dotted underline on hover */
+    color: blue; /* Optional: Change color on hover */
+}
+
+.bottom-right .spreadsheet:hover {
+    text-decoration: underline dashed; /* Adds a dashed underline on hover */
+    color: green; /* Optional: Change color on hover */
+}
+
+.cell-content {
+    display: flex;
+    align-items: center; /* Vertically centers the items */
+}

@@ -9,8 +9,9 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Pagination from '@mui/material/Pagination';
 import ClipLoader from "react-spinners/ClipLoader";
-import { BiSolidEdit, BiListPlus } from "react-icons/bi";
+import { BiSolidTrashAlt, BiListPlus } from "react-icons/bi";
 import { BsFileEarmarkSpreadsheetFill, BsFillFileEarmarkPdfFill } from "react-icons/bs";
+import { archivedTransaction } from '../../utils/TimeUtils';
 
 import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
@@ -42,7 +43,16 @@ function Shift() {
     const [ showSpreadsheetComponent, setShowSpreadsheetComponent ] = useState(false);
     const [ showPDFComponent, setShowPDFComponent ] = useState(false);
 
-    console.log(transactions);
+    const [ snackbarState, setSnackbarState ] = useState({
+        open: false,
+        message: '',
+    });
+
+    const handleClose = () => {
+        if (!loading) {
+            setSnackbarState({ ...snackbarState, open: false });
+        }
+    };
 
     const actions = [
         { 
@@ -96,6 +106,21 @@ function Shift() {
         setTriggerFetch(prev => !prev);
 
     };
+
+    const handleArchive = async (id) => {
+        setLoading(true);
+        const result = await archivedTransaction(id);
+        setLoading(false);
+        setSnackbarState(prev => ({
+          ...prev,
+          open: true,
+          message: result ? "Transaction archived successfully" : "Failed to archive transaction",
+        }));
+        
+        setTimeout(() => {
+          handleClose();
+        }, 500); // Adjust delay as needed
+      };
 
     const handleEditDialogOpen = (transaction) => {
         setCurrentTransaction(transaction);
@@ -174,10 +199,10 @@ function Shift() {
                                             <TableCell align="right">{formatMillisecondsToTime(row.totalBreakTime) || '-'}</TableCell>
                                             <TableCell align="right">{row.computedTotalTimeClock || '-'}</TableCell>
                                             <TableCell align="right">
-                                                <BiSolidEdit 
+                                                <BiSolidTrashAlt 
                                                     size={22} 
                                                     style={{ cursor: 'pointer' }} 
-                                                    onClick={() => handleEditDialogOpen(row)} 
+                                                    onClick={() => handleArchive(row.id)} 
                                                 />
                                             </TableCell>                                        
                                             <TableCell align="right">{row.status}</TableCell>
