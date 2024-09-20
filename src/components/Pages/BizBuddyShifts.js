@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, Stack, Avatar, InputLabel, MenuItem, FormControl, Select, Pagination } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, Stack, Avatar, MenuItem, FormControl, Select, Pagination } from '@mui/material';
 import GenerateShifts from '../Base/GenerateShifts';
 import BaseSpeedDial from '../Base/BaseSpeedDial';
 import '../../assets/fonts/roboto.css';
@@ -41,10 +41,9 @@ const stringToColor = (string) => {
 };
 
 function BizBuddyShifts({ userFName }) {
-  const [value, setValue] = useState(0);
   const [selectedAvatar, setSelectedAvatar] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(20);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   const [accounts, setAccounts] = useState([]);
   const [shifts, setShifts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -90,7 +89,6 @@ function BizBuddyShifts({ userFName }) {
   }, [selectedAvatar]);
 
   const handleAvatarClick = (name) => setSelectedAvatar(name);
-  const handleChange = (event, newValue) => setValue(newValue);
   const handlePageChange = (event, newPage) => setCurrentPage(newPage);
   const handleChangeDate = (event) => setDate(event.target.value);
 
@@ -101,11 +99,15 @@ function BizBuddyShifts({ userFName }) {
 
   const totalPages = Math.ceil((shifts.timeLogs?.length || 0) / itemsPerPage);
 
-
-  const handleItemsPerPageChange = (event) => {
-    setItemsPerPage(parseInt(event.target.value, 10));
-    setCurrentPage(1); // Reset to first page when items per page change
-  };
+  const formattedShifts = (shifts.timeLogs || []).map(shift => ({
+    date: shift.timeOut ? formatDate(shift.timeOut) : "",
+    timeIn: formatTime(shift.timeIn),
+    timeOut: shift.timeOut ? formatTime(shift.timeOut) : "",
+    totalBreakTime: shift.totalBreakTime,
+    totalLunchBreakTime: shift.totalLunchBreakTime,
+    totalShiftTime: shift.totalShiftTime,
+    status: shift.status,
+  }));
 
   return (
     <div>
@@ -184,31 +186,22 @@ function BizBuddyShifts({ userFName }) {
         </Table>
       </TableContainer>
 
-      <Box sx={{ minWidth: 120, my: 2  }}>
-        <FormControl fullWidth size="small">
-          <Select
-            value={itemsPerPage}
-            onChange={handleItemsPerPageChange}
-            inputProps={{ 'aria-label': 'Select number of items per page' }}
-          >
-            <MenuItem value={5}>5</MenuItem>
-            <MenuItem value={10}>10</MenuItem>
-            <MenuItem value={50}>50</MenuItem>
-            <MenuItem value={100}>100</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
-
-      <Stack spacing={2} direction="row" justifyContent="center" sx={{ mt: 10 }}>
+      <div style={{ display: 'flex', justifyContent: 'center', padding: '20px 0' }}>
         <Pagination
-          count={Math.ceil((shifts.timeLogs?.length || 0) / itemsPerPage)}
+          count={totalPages}
           page={currentPage}
           onChange={handlePageChange}
+          shape="rounded"
         />
-      </Stack>
+      </div>
 
       <BaseSpeedDial />
-      <GenerateShifts shifts={shifts.timeLogs} extractionDate={new Date().toLocaleDateString()} userEmail={userFName} selected={selectedAvatar} />
+      <GenerateShifts
+        shifts={formattedShifts} // Pass the formatted shifts
+        extractionDate={formatDate(new Date())} // Human-readable extraction date
+        userEmail={userFName}
+        selected={selectedAvatar}
+      />
     </div>
   );
 }

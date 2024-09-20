@@ -3,7 +3,6 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 
 const GeneratePDF = ({ transactions, userName, onDownloadComplete }) => {
-
     useEffect(() => {
         const handleGeneratePDF = () => {
             if (transactions.length === 0) return;
