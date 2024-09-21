@@ -193,3 +193,29 @@ export async function retrieveShiftsUpcoming({ userID }) {
         return false;
     }
 }
+
+export async function createScheduleShift( formData ) {
+    const { agentName, endDate, startDate, supposedClockedIn, supposedClockedOut } = formData;
+    const { firstName, lastName } = splitFullName(agentName);
+
+    const url = `${apiUrl}/api/v1/biz-buddy/sv/create-new-shift/${firstName}/${lastName}/`;
+
+    try {
+        const token = localStorage.getItem('bb_session_token');
+        const response = await axios.post(url, {
+            startDate,
+            endDate,
+            supposedClockedIn,
+            supposedClockedOut
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            }
+        });
+        return response.status === 201 ? true : false;
+    } catch (error) {
+        // console.error('Error creating schedule shift:', error);
+        return false;
+    }
+}
