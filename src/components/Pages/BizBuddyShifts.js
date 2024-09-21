@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, Stack, Avatar, MenuItem, FormControl, Select, Pagination } from '@mui/material';
 import GenerateShifts from '../Base/GenerateShifts';
-import BaseSpeedDial from '../Base/BaseSpeedDial';
+import BaseSpeedDial from '../Base/ShiftSpeedDial';
 import '../../assets/fonts/roboto.css';
 import '../../assets/fonts/color.css';
 import '../../assets/styles/LoginForm.css';
@@ -14,19 +14,13 @@ const formatDate = (isoDate) => {
   return new Intl.DateTimeFormat('en-US', options).format(date);
 };
 
-// const formatTime = (isoDate) => {
-//   const date = new Date(isoDate);
-//   const options = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZoneName: 'short' };
-//   return new Intl.DateTimeFormat('en-US', options).format(date);
-// };
-
 const formatTime = (timeString) => {
   const date = new Date(timeString);
   if (isNaN(date)) {
       console.error(`Invalid time value: ${timeString}`);
-      return "Invalid Date"; // or some default value
+      return "Invalid Date"; 
   }
-  return date.toLocaleTimeString(); // or your desired formatting
+  return date.toLocaleTimeString(); 
 };
 
 
@@ -200,7 +194,7 @@ function BizBuddyShifts({ userFName }) {
               <MenuItem value={'Week'}>Week</MenuItem>
               <MenuItem value={'Bi-Monthly'}>Bi-Monthly</MenuItem>
               <MenuItem value={'Monthly'}>Monthly</MenuItem>
-              <MenuItem value={'Custom'}>Custom</MenuItem>
+              {/* <MenuItem value={'Custom'}>Custom</MenuItem> */}
               <MenuItem value={'Upcoming'}>Upcoming</MenuItem>
             </Select>
           </FormControl>

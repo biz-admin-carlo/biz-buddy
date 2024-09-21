@@ -10,14 +10,11 @@ import Generate from '../Base/Generate';
 import Pagination from '@mui/material/Pagination';
 import BaseSpeedDial from '../Base/UserSpeedDial';
 import { FaCircle } from "react-icons/fa";
-
-import { viewAllAccounts } from '../../utils/SvUtils';
+import { viewAllTeamNames } from '../../utils/SvUtils';
 
 import '../../assets/fonts/roboto.css';
 import '../../assets/fonts/color.css';
 import '../../assets/styles/LoginForm.css';
-
-const getFullName = (account) => `${account.firstName} ${account.lastName}`;
 
 const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -32,8 +29,8 @@ const formatDate = (dateString) => {
     }).format(date);
 };
 
-function BizBuddyUsers({ userFName }) {
-    const [accounts, setAccounts] = useState([]);
+function BizBuddyTeams({ userFName }) {
+    const [teams, setTeams] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [page, setPage] = useState(1);
@@ -44,13 +41,13 @@ function BizBuddyUsers({ userFName }) {
     };
 
     useEffect(() => {
-        const fetchAccounts = async () => {
+        const fetchTeams = async () => {
             try {
-                const data = await viewAllAccounts();
-                if (data) {
-                    setAccounts(data);
+                const data = await viewAllTeamNames();
+                if (data.teams) {
+                    setTeams(data.teams);
                 } else {
-                    setError('Failed to fetch accounts');
+                    setError('Failed to fetch teams');
                 }
             } catch (err) {
                 setError('An error occurred');
@@ -59,16 +56,14 @@ function BizBuddyUsers({ userFName }) {
             }
         };
 
-        fetchAccounts();
+        fetchTeams();
     }, []);
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>{error}</p>;
 
-    const extractionDate = new Date().toLocaleString();
-    
-    // Pagination logic to slice the accounts for current page
-    const paginatedAccounts = accounts.slice((page - 1) * rowsPerPage, page * rowsPerPage);
+    // Pagination logic to slice the teams for current page
+    const paginatedTeams = teams.slice((page - 1) * rowsPerPage, page * rowsPerPage);
 
     return (
         <div>
@@ -76,20 +71,18 @@ function BizBuddyUsers({ userFName }) {
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell>Name</TableCell>
-                            <TableCell align="right">Email</TableCell>
-                            <TableCell align="right">DOB</TableCell>
-                            <TableCell align="right">Team</TableCell>
-                            <TableCell align="right">Position</TableCell>
-                            <TableCell align="right">Admin</TableCell>
-                            <TableCell align="right">Supervisor</TableCell>
-                            <TableCell align="right">Last Access</TableCell>
+                            <TableCell>Team Name</TableCell>
+                            <TableCell align="right">Team Unique ID</TableCell>
+                            <TableCell align="right">Team Alias</TableCell>
+                            <TableCell align="right">Team Code</TableCell>
+                            <TableCell align="right">Active Status</TableCell>
+                            <TableCell align="right">Created At</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {paginatedAccounts.map((account, index) => (
+                        {paginatedTeams.map((team, index) => (
                             <TableRow
-                                key={account.id}
+                                key={team._id}
                                 sx={{
                                     '&:last-child td, &:last-child th': { border: 0 },
                                     backgroundColor: index % 2 === 0 ? '#f5f5f5' : '#FFFFFF',
@@ -97,27 +90,21 @@ function BizBuddyUsers({ userFName }) {
                             >
                                 <TableCell component="th" scope="row">
                                     <div className="cell-content">
-                                        {getFullName(account)}
+                                        {team.teamName}
                                         <FaCircle
                                             style={{
                                                 marginLeft: '4px',
                                                 fontSize: '6px',
-                                                color: account.isActive ? 'green' : 'red',
+                                                color: team.isActive ? 'green' : 'red',
                                             }}
                                         />
                                     </div>
                                 </TableCell>
-                                <TableCell align="right">{account.email || '-'}</TableCell>
-                                <TableCell align="right">{account.birthday || '-'}</TableCell>
-                                <TableCell align="right">{account.teamName || '-'}</TableCell>
-                                <TableCell align="right">{account.teamRole || '-'}</TableCell>
-                                <TableCell align="right">{account.isSysAd ? 'Yes' : 'No'}</TableCell>
-                                <TableCell align="right">{account.isSv ? 'Yes' : 'No'}</TableCell>
-                                <TableCell align="right">
-                                    {account.loginDetails.length > 0
-                                        ? formatDate(account.loginDetails[account.loginDetails.length - 1].timeDateDetails)
-                                        : '-'}
-                                </TableCell>
+                                <TableCell align="right">{team.teamUniqueId}</TableCell>
+                                <TableCell align="right">{team.teamAlias}</TableCell>
+                                <TableCell align="right">{team.teamCode}</TableCell>
+                                <TableCell align="right">{team.isActive ? 'Active' : 'Inactive'}</TableCell>
+                                <TableCell align="right">{formatDate(team.createdAt)}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
@@ -127,17 +114,14 @@ function BizBuddyUsers({ userFName }) {
             {/* Pagination */}
             <div style={{ display: 'flex', justifyContent: 'center', padding: '20px 0' }}>
                 <Pagination
-                    count={Math.ceil(accounts.length / rowsPerPage)} // Total number of pages
+                    count={Math.ceil(teams.length / rowsPerPage)} // Total number of pages
                     page={page}
                     onChange={handleChangePage}
                     shape="rounded"
                 />
             </div>
-
-            <BaseSpeedDial />
-            <Generate accounts={accounts} extractionDate={extractionDate} userEmail={userFName} />
         </div>
     );
 }
 
-export default BizBuddyUsers;
+export default BizBuddyTeams;
