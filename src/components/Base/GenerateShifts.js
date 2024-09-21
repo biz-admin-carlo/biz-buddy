@@ -41,9 +41,9 @@ doc.text(`Data for: ${userName}`, 15, 70);
   doc.autoTable({
     head: [headers],
     body: shifts.map(shift => [
-      shift.date,
-      shift.timeIn,
-      shift.timeOut,
+      shift.date, // Now formatted
+      shift.timeIn, // Now formatted
+      shift.timeOut, // Now formatted
       shift.totalBreakTime,
       shift.totalLunchBreakTime,
       shift.totalShiftTime,
@@ -63,9 +63,9 @@ doc.text(`Data for: ${userName}`, 15, 70);
 const generateShiftSpreadsheet = (shifts, extractionDate, userEmail, userName) => {
   const headers = ["Date", "Clock-In", "Clock-Out", "Total Break Hours", "Total Lunch Hours", "Total Work Hours", "Status"];
   const data = shifts.map(shift => [
-    shift.date,
-    shift.timeIn,
-    shift.timeOut,
+    shift.date, // Now formatted
+    shift.timeIn, // Now formatted
+    shift.timeOut, // Now formatted
     shift.totalBreakTime,
     shift.totalLunchBreakTime,
     shift.totalShiftTime,
