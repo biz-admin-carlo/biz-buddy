@@ -7,6 +7,7 @@ import '../../assets/fonts/color.css';
 import '../../assets/styles/LoginForm.css';
 import BizBuddyShifts from '../Pages/BizBuddyShifts';
 import BizBuddyUsers from '../Pages/BizBuddyUsers';
+import BizBuddyData from '../Pages/BizBuddyData';
 import { userDetails } from '../../utils/UserUtils';
 
 import '../../assets/fonts/roboto.css';
@@ -87,7 +88,7 @@ function Shift() {
                 <BizBuddyShifts userFName={userInfo.firstName} />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={2}>
-                Item Three
+                <BizBuddyData />
             </CustomTabPanel>
         </div>
     );

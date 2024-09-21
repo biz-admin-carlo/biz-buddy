@@ -99,3 +99,97 @@ export async function retrieveSceduleUsingName({ fullName }) {
         return false;
     }
 }
+
+export async function retrieveShiftsWeekly({ userID }) {
+    const { firstName, lastName } = splitFullName(userID);    
+    const url = `${apiUrl}/api/v1/biz-buddy/sv/view/${firstName}/${lastName}/weekly/`;
+
+    try {
+        const token = localStorage.getItem('bb_session_token');
+        const response = await axios.get(url, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+        if (response.status === 200) {
+            return response.data;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        console.error('Error retrieving shifts:', error);
+        return false;
+    }
+};
+
+export async function retrieveShiftsBiMonthly({ userID }) {
+    const { firstName, lastName } = splitFullName(userID);    
+    const url = `${apiUrl}/api/v1/biz-buddy/sv/view/${firstName}/${lastName}/bi-monthly/`;
+
+    try {
+        const token = localStorage.getItem('bb_session_token');
+        const response = await axios.get(url, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+        if (response.status === 200) {
+            return response.data;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        console.error('Error retrieving shifts:', error);
+        return false;
+    }
+}
+
+export async function retrieveShiftsMonthly({ userID }) {
+    const { firstName, lastName } = splitFullName(userID);    
+    const url = `${apiUrl}/api/v1/biz-buddy/sv/view/${firstName}/${lastName}/monthly/`;
+
+    try {
+        const token = localStorage.getItem('bb_session_token');
+        const response = await axios.get(url, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (response.status === 200) {
+            return response.data;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        console.error('Error retrieving shifts:', error);
+        return false;
+    }
+}
+
+export async function retrieveShiftsUpcoming({ userID }) {
+    const { firstName, lastName } = splitFullName(userID);    
+    const url = `${apiUrl}/api/v1/biz-buddy/sv/view/${firstName}/${lastName}/upcoming/`;
+
+    try {
+        const token = localStorage.getItem('bb_session_token');
+        const response = await axios.get(url, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (response.status === 200) {
+            return response.data;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        console.error('Error retrieving shifts:', error);
+        return false;
+    }
+}

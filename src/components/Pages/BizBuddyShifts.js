@@ -6,7 +6,7 @@ import '../../assets/fonts/roboto.css';
 import '../../assets/fonts/color.css';
 import '../../assets/styles/LoginForm.css';
 import '../../assets/styles/BizBuddy.css';
-import { viewlAllAgentAccounts, retrieveShiftsUsingName } from '../../utils/SvUtils';
+import { viewlAllAgentAccounts, retrieveShiftsUsingName, retrieveShiftsWeekly, retrieveShiftsBiMonthly, retrieveShiftsMonthly, retrieveShiftsUpcoming } from '../../utils/SvUtils';
 
 const formatDate = (isoDate) => {
   const date = new Date(isoDate);
@@ -14,11 +14,21 @@ const formatDate = (isoDate) => {
   return new Intl.DateTimeFormat('en-US', options).format(date);
 };
 
-const formatTime = (isoDate) => {
-  const date = new Date(isoDate);
-  const options = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZoneName: 'short' };
-  return new Intl.DateTimeFormat('en-US', options).format(date);
+// const formatTime = (isoDate) => {
+//   const date = new Date(isoDate);
+//   const options = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZoneName: 'short' };
+//   return new Intl.DateTimeFormat('en-US', options).format(date);
+// };
+
+const formatTime = (timeString) => {
+  const date = new Date(timeString);
+  if (isNaN(date)) {
+      console.error(`Invalid time value: ${timeString}`);
+      return "Invalid Date"; // or some default value
+  }
+  return date.toLocaleTimeString(); // or your desired formatting
 };
+
 
 const stringAvatar = (name) => {
   return {
@@ -70,6 +80,7 @@ function BizBuddyShifts({ userFName }) {
 
   useEffect(() => {
     if (selectedAvatar) {
+      setDate('Day');
       const fetchDetailsUser = async (fullName) => {
         try {
           const data = await retrieveShiftsUsingName({ fullName });
@@ -90,24 +101,74 @@ function BizBuddyShifts({ userFName }) {
 
   const handleAvatarClick = (name) => setSelectedAvatar(name);
   const handlePageChange = (event, newPage) => setCurrentPage(newPage);
-  const handleChangeDate = (event) => setDate(event.target.value);
 
-  const paginatedShifts = shifts.timeLogs?.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  const handleChangeDate = async (event) => {
+    const selectedDate = event.target.value;
+    setDate(selectedDate);
+  
+    if (selectedAvatar) {
+      setLoading(true); // Show loading state while fetching
+      
+      try {
+        let data;
+  
+        if (selectedDate === 'Week') {
+          data = await retrieveShiftsWeekly({ userID: selectedAvatar });
+        } else if (selectedDate === 'Day') {
+          data = await retrieveShiftsUsingName({ fullName: selectedAvatar });
+        } else if (selectedDate === 'Bi-Monthly') {
+          data = await retrieveShiftsBiMonthly({ userID: selectedAvatar });
+        } else if (selectedDate === 'Monthly') {
+          data = await retrieveShiftsMonthly({ userID: selectedAvatar });
+        } else if (selectedDate === 'Upcoming') {
+          data = await retrieveShiftsUpcoming({ userID: selectedAvatar });
+        }
+  
+        if (data) {
+          setShifts(data);
+        } else {
+          setError(`Failed to fetch ${selectedDate.toLowerCase()} shifts`);
+        }
+      } catch (err) {
+        setError(`An error occurred while fetching ${selectedDate.toLowerCase()} shifts`);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const paginatedShifts = Array.isArray(shifts.timeLogs)
+    ? shifts.timeLogs.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+      )
+  : [];
 
   const totalPages = Math.ceil((shifts.timeLogs?.length || 0) / itemsPerPage);
 
-  const formattedShifts = (shifts.timeLogs || []).map(shift => ({
-    date: shift.timeOut ? formatDate(shift.timeOut) : "",
-    timeIn: formatTime(shift.timeIn),
-    timeOut: shift.timeOut ? formatTime(shift.timeOut) : "",
-    totalBreakTime: shift.totalBreakTime,
-    totalLunchBreakTime: shift.totalLunchBreakTime,
-    totalShiftTime: shift.totalShiftTime,
-    status: shift.status,
-  }));
+  if (currentPage > totalPages && totalPages > 0) {
+    setCurrentPage(totalPages);
+  }
+
+  const formattedShifts = Array.isArray(shifts.timeLogs)
+  ? shifts.timeLogs.map(shift => ({
+      date: shift.timeIn ? formatDate(shift.timeIn) : "",
+      timeIn: formatTime(shift.timeIn),
+      timeOut: shift.timeOut ? formatTime(shift.timeOut) : "",
+      totalBreakTime: shift.totalBreakTime,
+      totalLunchBreakTime: shift.totalLunchBreakTime,
+      totalShiftTime: shift.totalShiftTime,
+      status: shift.status,
+    }))
+  : [];
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+  
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div>
@@ -154,34 +215,60 @@ function BizBuddyShifts({ userFName }) {
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Date</TableCell>
-              <TableCell align="right">Clock-In</TableCell>
-              <TableCell align="right">Clock-Out</TableCell>
-              <TableCell align="right">Total Break Hours</TableCell>
-              <TableCell align="right">Total Lunch Hours</TableCell>
-              <TableCell align="right">Total Work Hours</TableCell>
-              <TableCell align="right">Status</TableCell>
+              {date === 'Upcoming' ? (
+                <>
+                  <TableCell>Date</TableCell>
+                  <TableCell align="right">Assigned Clock-In</TableCell>
+                  <TableCell align="right">Assigned Clock-Out</TableCell>
+                  <TableCell align="right">Assigned On</TableCell>
+                  <TableCell align="right">Assigned By</TableCell>
+                </>
+              ) : (
+                <>
+                  <TableCell>Date</TableCell>
+                  <TableCell align="right">Clock-In</TableCell>
+                  <TableCell align="right">Clock-Out</TableCell>
+                  <TableCell align="right">Total Break Hours</TableCell>
+                  <TableCell align="right">Total Lunch Hours</TableCell>
+                  <TableCell align="right">Total Work Hours</TableCell>
+                  <TableCell align="right">Status</TableCell>
+                </>
+              )}
             </TableRow>
           </TableHead>
+
           <TableBody>
-            {(paginatedShifts || []).map((log, index) => (
-              <TableRow
-                key={index}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {log.timeOut ? formatDate(log.timeOut) : ""}
+            {paginatedShifts && paginatedShifts.length > 0 ? (
+              paginatedShifts.map((log, index) => (
+                <TableRow key={index}>
+                  {date === 'Upcoming' ? (
+                    <>
+                      <TableCell>{log.date ? formatDate(log.date) : "-"}</TableCell>
+                      <TableCell align="right">{formatTime(log.supposedClockedIn) || "-"}</TableCell>
+                      <TableCell align="right">{formatTime(log.supposedClockedOut) || "-"}</TableCell>
+                      <TableCell align="right">{log.createdAt ? formatDate(log.createdAt) : "-"}</TableCell>
+                      <TableCell align="right">{log.svDetails.email || "-"}</TableCell>
+                    </>
+                  ) : (
+                    <>
+                      <TableCell>{log.timeIn ? formatDate(log.timeIn) : "-"}</TableCell>
+                      <TableCell align="right">{log.timeIn ? formatTime(log.timeIn) : "-"}</TableCell>
+                      <TableCell align="right">{log.timeOut ? formatTime(log.timeOut) : "-"}</TableCell>
+                      <TableCell align="right">{log.totalBreakTime ? `${log.totalBreakTime} hrs` : "-"}</TableCell>
+                      <TableCell align="right">{log.totalLunchBreakTime ? `${log.totalLunchBreakTime} hrs` : "-"}</TableCell>
+                      <TableCell align="right">{log.totalShiftTime ? `${log.totalShiftTime} hrs` : "-"}</TableCell>
+                      <TableCell align="right">{log.status || "-"}</TableCell>
+                    </>
+                  )}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={date === 'Upcoming' ? 3 : 7} align="center">
+                  No shifts available
                 </TableCell>
-                <TableCell align="right">{formatTime(log.timeIn)}</TableCell>
-                <TableCell align="right">
-                  {log.timeOut ? formatTime(log.timeOut) : ""}
-                </TableCell>
-                <TableCell align="right">{log.totalBreakTime}</TableCell>
-                <TableCell align="right">{log.totalLunchBreakTime}</TableCell>
-                <TableCell align="right">{log.totalShiftTime}</TableCell>
-                <TableCell align="right">{log.status}</TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </TableContainer>
@@ -197,8 +284,8 @@ function BizBuddyShifts({ userFName }) {
 
       <BaseSpeedDial />
       <GenerateShifts
-        shifts={formattedShifts} // Pass the formatted shifts
-        extractionDate={formatDate(new Date())} // Human-readable extraction date
+        shifts={formattedShifts} 
+        extractionDate={formatDate(new Date())}
         userEmail={userFName}
         selected={selectedAvatar}
       />
