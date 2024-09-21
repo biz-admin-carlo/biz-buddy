@@ -8,6 +8,7 @@ import '../../assets/styles/LoginForm.css';
 import BizBuddyShifts from '../Pages/BizBuddyShifts';
 import BizBuddyUsers from '../Pages/BizBuddyUsers';
 import BizBuddyData from '../Pages/BizBuddyData';
+import BizBuddyTeams from '../Pages/BizBuddyTeams';
 import { userDetails } from '../../utils/UserUtils';
 
 import '../../assets/fonts/roboto.css';
@@ -79,6 +80,7 @@ function Shift() {
                     <Tab label="Users" {...a11yProps(0)} />
                     <Tab label="Shifts" {...a11yProps(1)} />
                     <Tab label="Data" {...a11yProps(2)} />
+                    <Tab label="Teams" {...a11yProps(3)} />
                 </Tabs>
             </Box>
             <CustomTabPanel value={value} index={0}>
@@ -89,6 +91,9 @@ function Shift() {
             </CustomTabPanel>
             <CustomTabPanel value={value} index={2}>
                 <BizBuddyData />
+            </CustomTabPanel>
+            <CustomTabPanel value={value} index={3}>
+                <BizBuddyTeams />
             </CustomTabPanel>
         </div>
     );

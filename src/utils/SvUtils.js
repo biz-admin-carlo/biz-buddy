@@ -219,3 +219,48 @@ export async function createScheduleShift( formData ) {
         return false;
     }
 }
+
+export async function createTeam( formData ) {
+    const { teamName, teamAlias, teamCode } = formData;
+
+    const url = `${apiUrl}/api/v1/biz-buddy/sv/create/team-name/`;
+
+    try {
+        const token = localStorage.getItem('bb_session_token');
+        const response = await axios.post(url, {
+            teamName,
+            teamAlias,
+            teamCode,
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            }
+        });
+        return response.status === 201 ? true : false;
+    } catch (error) {
+        // console.error('Error creating schedule shift:', error);
+        return false;
+    }
+}
+
+export async function viewAllTeamNames() {
+    try {
+        const url = `${apiUrl}/api/v1/biz-buddy/sv/view/team-name/`;
+        const token = localStorage.getItem('bb_session_token');  
+
+        const response = await axios.get(url, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` 
+            }
+        });
+        if (response.status === 200) {
+            return response.data; 
+        } else {
+            return false;
+        }
+    } catch (error) {
+        return false; 
+    }
+}
