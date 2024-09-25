@@ -9,7 +9,7 @@ import ProfilePage from './pages/Forms/ProfilePage';
 import LeavePage from './pages/Forms/LeavePage';
 import NavbarBottom from './components/Base/NavBottom';
 import BizBuddyLayout from './pages/Forms/BizBuddy';
-import BizSolutionsLayout from './pages/Forms/BizSolutions'
+import BizSolutionsLayout from './pages/Forms/BizSolutions';
 
 function App() {
   return (
@@ -25,10 +25,8 @@ function App() {
           <Route path="/team" element={<RegisterPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/leave" element={<LeavePage />} />
-
           <Route path="/:adminID/buddy" element={<BizBuddyLayout />} />
           <Route path="/:adminID/solutions" element={<BizSolutionsLayout />} />
-
         </Routes>
         <NavbarBottom />
       </div>

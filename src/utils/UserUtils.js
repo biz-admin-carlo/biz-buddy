@@ -15,6 +15,7 @@ export async function userLogin(email, password) {
             }
         });
 
+        console.log(response.data);
         if (response.data && response.data.accessToken) {
             localStorage.setItem('bb_session_token', response.data.accessToken); 
             return true;
@@ -141,3 +142,24 @@ export async function createUser(data) {
         return { success: false, message: 'An error occurred during user registration.' };
     }
 }
+
+export async function checkTokenActive() {
+    try {
+        const url = `${apiUrl}/api/v1/biz-buddy/users/check-token`;
+        const token = localStorage.getItem('bb_session_token');  
+
+        const response = await axios.get(url, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` 
+            }
+        });
+        if (response.status === 200) {
+            return true; 
+        } else {
+            return false;
+        }
+    } catch (error) {
+        return false; 
+    }
+};
