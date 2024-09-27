@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { Modal, Box, Typography, TextField, Button, IconButton, InputAdornment } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Modal, Box, Typography, TextField, Button, IconButton, InputAdornment, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { createUser } from '../../utils/UserUtils';
+import { viewAllTeamNames } from '../../utils/SvUtils';
 
 const modalStyle = {
   position: 'absolute',
@@ -27,15 +28,30 @@ export default function CreateAccountModal({ open, handleClose }) {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');  // To display error messages
+  const [errorMessage, setErrorMessage] = useState(''); 
+  const [teamNames, setTeamNames] = useState([]);
+
+  console.log(teamNames);
+  console.log(teamNames.length);
+
+  useEffect(() => {
+    const fetchTeamNames = async () => {
+      const response = await viewAllTeamNames();
+      if (response && response.teams) {
+        setTeamNames(response.teams); // Set team names to state
+      } else {
+        setTeamNames([]); // Handle empty or error case
+      }
+    };
+
+    fetchTeamNames();
+  }, []);
 
   const handleCreateAccount = async () => {
     const result = await createUser(formData);
     if (result === true) {
-      // Close modal after successful account creation
       handleClose();
     } else {
-      // Display error message on failure
       setErrorMessage(result.message);
     }
   };
@@ -52,7 +68,7 @@ export default function CreateAccountModal({ open, handleClose }) {
     <Modal open={open} onClose={handleClose}>
       <Box sx={modalStyle}>
         <Typography variant="h6" component="h2" gutterBottom>
-          Create Account
+          Create Account!
         </Typography>
 
         <TextField
@@ -106,18 +122,26 @@ export default function CreateAccountModal({ open, handleClose }) {
           type="date"
           fullWidth
           margin="normal"
-          InputLabelProps={{ shrink: true }}  // Ensures the label stays above the input
+          InputLabelProps={{ shrink: true }}
           value={formData.birthday}
           onChange={handleChange}
         />
-        <TextField
-          label="Team Name"
-          name="teamName"
-          fullWidth
-          margin="normal"
-          value={formData.teamName}
-          onChange={handleChange}
-        />
+
+        <FormControl fullWidth margin="normal">
+          <InputLabel>Team Name</InputLabel>
+          <Select
+            name="teamName"
+            value={formData.teamName}
+            onChange={handleChange}
+          >
+            {teamNames.map((team) => (
+              <MenuItem key={team._id} value={team.teamName}>
+                {team.teamName} ({team.teamAlias})
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
         <TextField
           label="Team Role"
           name="teamRole"
