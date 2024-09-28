@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Box, Typography, TextField, Button, } from '@mui/material';
+import { Modal, Box, Typography, TextField, Button } from '@mui/material';
 import { createTeam } from '../../utils/SvUtils';
 
 const modalStyle = {
@@ -19,11 +19,17 @@ export default function CreateTeamModal({ open, handleClose }) {
     teamName: '',
     teamAlias: '',
     teamCode: '',
+    ein: '',
   });
 
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleCreateAccount = async () => {
+    if (!formData.teamName || !formData.teamAlias || !formData.teamCode || !formData.ein) {
+      setErrorMessage('All fields are required.');
+      return; 
+    }
+
     const result = await createTeam(formData);
     if (result === true) {
       handleClose();
@@ -34,6 +40,7 @@ export default function CreateTeamModal({ open, handleClose }) {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (errorMessage) setErrorMessage(''); 
   };
 
   return (
@@ -50,6 +57,9 @@ export default function CreateTeamModal({ open, handleClose }) {
           margin="normal"
           value={formData.teamName}
           onChange={handleChange}
+          required
+          error={!formData.teamName && errorMessage !== ''}
+          helperText={!formData.teamName && errorMessage !== '' ? 'This field is required.' : ''}
         />
         <TextField
           label="Team Alias"
@@ -58,6 +68,9 @@ export default function CreateTeamModal({ open, handleClose }) {
           margin="normal"
           value={formData.teamAlias}
           onChange={handleChange}
+          required
+          error={!formData.teamAlias && errorMessage !== ''}
+          helperText={!formData.teamAlias && errorMessage !== '' ? 'This field is required.' : ''}
         />
         <TextField
           label="Team Code"
@@ -66,6 +79,27 @@ export default function CreateTeamModal({ open, handleClose }) {
           margin="normal"
           value={formData.teamCode}
           onChange={handleChange}
+          required
+          error={!formData.teamCode && errorMessage !== ''}
+          helperText={!formData.teamCode && errorMessage !== '' ? 'This field is required.' : ''}
+        />
+        <TextField
+          label="Employer Identification Number (EIN)"
+          name="ein"
+          fullWidth
+          margin="normal"
+          value={formData.ein}
+          onChange={handleChange}
+          required
+          error={(formData.ein.length !== 9 && formData.ein.length > 0) || (errorMessage !== '' && !formData.ein)}
+          helperText={
+            formData.ein.length !== 9 && formData.ein.length > 0
+              ? 'EIN must be exactly 9 characters.'
+              : errorMessage !== '' && !formData.ein
+              ? 'This field is required.'
+              : ''
+          }
+          inputProps={{ maxLength: 9 }} 
         />
 
         {errorMessage && (
@@ -81,7 +115,7 @@ export default function CreateTeamModal({ open, handleClose }) {
           sx={{ mt: 2 }} 
           onClick={handleCreateAccount}
         >
-          Create Account
+          Create Team
         </Button>
       </Box>
     </Modal>

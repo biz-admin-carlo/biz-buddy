@@ -27,6 +27,7 @@ import '../../assets/fonts/color.css';
 import '../../assets/styles/LoginForm.css';
 
 import { userTransactions, userDetails } from '../../utils/UserUtils';
+import { retrieveSceduleUsingName } from '../../utils/SvUtils';
 import { formatMillisecondsToTime } from '../../utils/FormatUtils';
 
 function Shift() {
@@ -42,6 +43,17 @@ function Shift() {
     const [ triggerFetch, setTriggerFetch ] = useState(false);
     const [ showSpreadsheetComponent, setShowSpreadsheetComponent ] = useState(false);
     const [ showPDFComponent, setShowPDFComponent ] = useState(false);
+    const [ userFName, setUserFName ] = useState("");
+    const [ scheduled, setScheduled ] = useState([]);
+
+    console.log(transactions);
+
+    const options = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    };
 
     const [ snackbarState, setSnackbarState ] = useState({
         open: false,
@@ -78,6 +90,15 @@ function Shift() {
         if (result) {
             setTransactions(result);
         }
+
+        const fullName = userFName;
+
+        const resultSchedule = await retrieveSceduleUsingName({ fullName });
+
+        if(resultSchedule) {
+            setScheduled(resultSchedule.schedules)
+        };
+
         setLoading(false);
     }, []);
 
@@ -87,6 +108,7 @@ function Shift() {
             const result = await userDetails();
             if (result) {
                 setUserInfo(result);
+                setUserFName(result.firstName + " " + result.lastName);
             }
         }
         fetchUserDetails();
@@ -174,7 +196,7 @@ function Shift() {
                                         <TableCell align="right">Lunch</TableCell>
                                         <TableCell align="right">Break</TableCell>
                                         <TableCell align="right">Working Hours</TableCell>
-                                        <TableCell align="right">Edit Shift</TableCell>
+                                        {/* <TableCell align="right">Edit Shift</TableCell> */}
                                         <TableCell align="right">Status</TableCell>
 
                                     </TableRow>
@@ -192,19 +214,47 @@ function Shift() {
                                                     })}
                                                 </Link>
                                             </TableCell>
-                                            <TableCell align="right">-</TableCell>
+
+                                            <TableCell align="right">
+                                                {
+                                                    scheduled.length > 0 ? (
+                                                        scheduled.map((schedule) => {
+                                                            const scheduleDate = new Date(schedule.date).toLocaleDateString('en-US', options);
+                                                            const transactionDate = new Date(row.date).toLocaleDateString('en-US', options);
+
+                                                            if (scheduleDate === transactionDate) {
+                                                                return (
+                                                                    <div key={schedule._id}>
+                                                                        <strong>
+                                                                            <span> {new Date(schedule.supposedClockedIn).toLocaleTimeString('en-US')} </span>
+                                                                        </strong>
+                                                                        -
+                                                                        <strong>
+                                                                            <span> {new Date(schedule.supposedClockedOut).toLocaleTimeString('en-US')} </span>
+                                                                        </strong>
+                                                                    </div>
+                                                                );
+                                                            }
+                                                            return null;
+                                                        }).filter(Boolean)[0] || '-' 
+                                                    ) : '-'
+                                                }
+                                            </TableCell>
+
+
+
                                             <TableCell align="right">{row.timeIn ? new Date(row.timeIn).toLocaleTimeString() : '-'}</TableCell>
                                             <TableCell align="right">{row.timeOut ? new Date(row.timeOut).toLocaleTimeString() : '-'}</TableCell>
                                             <TableCell align="right">{formatMillisecondsToTime(row.totalLunchBreakTime) || '-'}</TableCell>
                                             <TableCell align="right">{formatMillisecondsToTime(row.totalBreakTime) || '-'}</TableCell>
                                             <TableCell align="right">{row.computedTotalTimeClock || '-'}</TableCell>
-                                            <TableCell align="right">
+                                            {/* <TableCell align="right">
                                                 <BiSolidTrashAlt 
                                                     size={22} 
                                                     style={{ cursor: 'pointer' }} 
                                                     onClick={() => handleArchive(row.id)} 
                                                 />
-                                            </TableCell>                                        
+                                            </TableCell>                                         */}
                                             <TableCell align="right">{row.status}</TableCell>
                                         </TableRow>
                                     ))}

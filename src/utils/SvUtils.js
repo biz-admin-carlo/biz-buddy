@@ -221,7 +221,7 @@ export async function createScheduleShift( formData ) {
 }
 
 export async function createTeam( formData ) {
-    const { teamName, teamAlias, teamCode } = formData;
+    const { teamName, teamAlias, teamCode, ein } = formData;
 
     const url = `${apiUrl}/api/v1/biz-buddy/sv/create/team-name/`;
 
@@ -231,6 +231,7 @@ export async function createTeam( formData ) {
             teamName,
             teamAlias,
             teamCode,
+            ein
         }, {
             headers: {
                 'Content-Type': 'application/json',

@@ -53,7 +53,6 @@ export async function archivedTransaction(shiftID) {
 
 export async function manualShift(shiftInfo) {
     const token = localStorage.getItem('bb_session_token');
-
     try {
         const url = `${apiUrl}/api/v1/biz-buddy/time-logs/manual-shift`;
 
