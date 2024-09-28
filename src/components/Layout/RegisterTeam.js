@@ -71,6 +71,16 @@ function RegistrationForm() {
           style={{ marginBottom: '16px', marginTop: '8px'}}
         />
 
+        <TextField
+          {...register("email", { required: "Email is required", pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i, message: "Invalid email address" } })}
+          helperText={errors.email && errors.email.message}
+          fullWidth
+          label="Email Address"
+          id="fullWidth"
+          error={!!errors.email}
+          style={{ marginBottom: '16px', marginTop: '8px'}}
+        />
+
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
           <CustomButton>
             Create Team

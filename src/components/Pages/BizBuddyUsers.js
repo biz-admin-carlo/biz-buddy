@@ -10,6 +10,7 @@ import Generate from '../Base/Generate';
 import Pagination from '@mui/material/Pagination';
 import BaseSpeedDial from '../Base/UserSpeedDial';
 import { FaCircle } from "react-icons/fa";
+import { BiSolidTrashAlt, BiSolidBadgeCheck } from "react-icons/bi";
 
 import { viewAllAccounts } from '../../utils/SvUtils';
 
@@ -42,6 +43,21 @@ function BizBuddyUsers({ userFName }) {
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
+
+    // const handleArchive = async (id) => {
+    //     setLoading(true);
+    //     const result = await archivedTransaction(id);
+    //     setLoading(false);
+    //     setSnackbarState(prev => ({
+    //       ...prev,
+    //       open: true,
+    //       message: result ? "Transaction archived successfully" : "Failed to archive transaction",
+    //     }));
+        
+    //     setTimeout(() => {
+    //       handleClose();
+    //     }, 500); // Adjust delay as needed
+    //   };
 
     useEffect(() => {
         const fetchAccounts = async () => {
@@ -78,11 +94,12 @@ function BizBuddyUsers({ userFName }) {
                         <TableRow>
                             <TableCell>Name</TableCell>
                             <TableCell align="right">Email</TableCell>
-                            <TableCell align="right">DOB</TableCell>
+                            <TableCell align="right">Birthdate</TableCell>
                             <TableCell align="right">Team</TableCell>
                             <TableCell align="right">Position</TableCell>
                             <TableCell align="right">Admin</TableCell>
                             <TableCell align="right">Supervisor</TableCell>
+                            <TableCell align="right">Action</TableCell>
                             <TableCell align="right">Last Access</TableCell>
                         </TableRow>
                     </TableHead>
@@ -113,6 +130,21 @@ function BizBuddyUsers({ userFName }) {
                                 <TableCell align="right">{account.teamRole || '-'}</TableCell>
                                 <TableCell align="right">{account.isSysAd ? 'Yes' : 'No'}</TableCell>
                                 <TableCell align="right">{account.isSv ? 'Yes' : 'No'}</TableCell>
+                                <TableCell align="right">
+                                    {account.isActive ? (
+                                        <BiSolidTrashAlt 
+                                        size={20} 
+                                        style={{ cursor: 'pointer', color: '#B8001F' }}  // Red Trash Icon
+                                        // onClick={() => handleArchive(row.id)} 
+                                        />
+                                    ) : (
+                                        <BiSolidBadgeCheck 
+                                        size={20} 
+                                        style={{ cursor: 'pointer', color: '#347928' }}  // Green Check Icon
+                                        // onClick={() => handleActivate(row.id)}  // Adjust this handler as needed
+                                        />
+                                    )}
+                                </TableCell>
                                 <TableCell align="right">
                                     {account.loginDetails.length > 0
                                         ? formatDate(account.loginDetails[account.loginDetails.length - 1].timeDateDetails)

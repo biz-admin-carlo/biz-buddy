@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, Stack, Avatar, MenuItem, FormControl, Select, Pagination } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, Stack, Avatar, MenuItem, FormControl, Select, Pagination, Tooltip } from '@mui/material';
 import GenerateShifts from '../Base/GenerateShifts';
 import BaseSpeedDial from '../Base/ShiftSpeedDial';
 import '../../assets/fonts/roboto.css';
@@ -53,6 +53,8 @@ function BizBuddyShifts({ userFName }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [date, setDate] = useState('Day');
+
+  console.log(shifts);
 
   useEffect(() => {
     const fetchAccounts = async () => {
@@ -251,7 +253,16 @@ function BizBuddyShifts({ userFName }) {
                       <TableCell align="right">{log.totalBreakTime ? `${log.totalBreakTime} hrs` : "-"}</TableCell>
                       <TableCell align="right">{log.totalLunchBreakTime ? `${log.totalLunchBreakTime} hrs` : "-"}</TableCell>
                       <TableCell align="right">{log.totalShiftTime ? `${log.totalShiftTime} hrs` : "-"}</TableCell>
-                      <TableCell align="right">{log.status || "-"}</TableCell>
+                      <TableCell align="right">
+                        {log.reasonForManualEntry ? (
+                          <Tooltip title={log.reasonForManualEntry}>
+                            <span style={{ cursor: 'pointer' }}>Pending</span>
+                          </Tooltip>
+                        ) : (
+                          "Approved"
+                        )}
+                      </TableCell>
+
                     </>
                   )}
                 </TableRow>

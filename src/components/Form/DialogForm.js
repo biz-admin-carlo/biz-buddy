@@ -50,6 +50,7 @@ export default function FormDialog({ open, onClose }) {
       lunchBreakOut: formJson.lunchBreakOut,
       breakIn: formJson.breakIn,
       breakOut: formJson.breakOut,
+      reason: formJson.manualFillingReason,
       timeZone: timeZone || 'N/A',
     };
 
@@ -120,6 +121,19 @@ export default function FormDialog({ open, onClose }) {
             InputLabelProps={{
               shrink: true,
             }}
+          />
+
+          <TextField
+            margin="dense"
+            id="manualFillingReason"
+            name="manualFillingReason"
+            label="Reason for Manual Filling"
+            type="text"
+            multiline
+            rows={4}
+            inputProps={{ maxLength: 200 }}
+            fullWidth
+            helperText="Max 200 characters"
           />
 
           {/* Lunch Break In Field */}
