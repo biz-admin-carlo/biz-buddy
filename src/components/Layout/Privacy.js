@@ -15,11 +15,11 @@ function Privacy() {
           <Link underline="hover" color="inherit" href="/login">
             Login
           </Link>
-          <Typography sx={{ color: 'text.primary' }}>Terms of Use</Typography>
+          <Typography sx={{ color: 'text.primary' }}>Privacy Policy</Typography>
         </Breadcrumbs>
 
         <Typography variant="h3" component="h1" align="left" gutterBottom sx={{ fontWeight: 'bold' }}>
-            Terms of Use
+            Privacy Policy
         </Typography>
         <Typography variant="h5" component="h5" align="left" gutterBottom sx={{ fontWeight: 'bold' }}>
             BizBuddy - Timekeeping Mobile Application
