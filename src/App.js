@@ -10,13 +10,15 @@ import LeavePage from './pages/Forms/LeavePage';
 import NavbarBottom from './components/Base/NavBottom';
 import BizBuddyLayout from './pages/Forms/BizBuddy';
 import BizSolutionsLayout from './pages/Forms/BizSolutions';
+import PrivacyPage from './pages/Forms/PrivacyPage';
+import TermsUsePage from './pages/Forms/TermsUsePage';
 
 function App() {
   return (
     <Router>
       <div className="App">
         <Routes>
-          <Route path="/*" element={<HomePage />} />
+          <Route path="/*" element={<LoginPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/reset-password" element={<PasswordPage />} />
           <Route path="/home" element={<HomePage />} />
@@ -27,6 +29,9 @@ function App() {
           <Route path="/leave" element={<LeavePage />} />
           <Route path="/:adminID/buddy" element={<BizBuddyLayout />} />
           <Route path="/:adminID/solutions" element={<BizSolutionsLayout />} />
+
+          <Route path="/privacy-policy" element={<PrivacyPage />} />
+          <Route path="/terms-of-use" element={<TermsUsePage />} />
         </Routes>
         <NavbarBottom />
       </div>

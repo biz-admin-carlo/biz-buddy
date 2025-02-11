@@ -40,8 +40,9 @@ function RegistrationForm() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '80%', maxWidth: '400px' }}>
           <Avatar
             src={icon}
+            variant="square"
             className="profile-header-avatar"
-            style={{ marginRight: '0px' }}
+            style={{ marginRight: '20px' }}
           />
           <h1 className="roboto-medium">BizBuddy</h1>
         </div>
